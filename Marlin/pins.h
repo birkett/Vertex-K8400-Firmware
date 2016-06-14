@@ -132,7 +132,7 @@
 #define DEBUG_PIN 0
 
 //our RS485 pins
-#define TX_ENABLE_PIN 12
+#define TX_ENABLE_PIN -1//12
 #define RX_ENABLE_PIN 13
 
 #endif
@@ -205,7 +205,7 @@
 #define DEBUG_PIN 0
 
 //our RS485 pins
-#define TX_ENABLE_PIN 12
+#define TX_ENABLE_PIN -1//12
 #define RX_ENABLE_PIN 13
 
 #endif
@@ -289,7 +289,7 @@
      //buttons are directly attached
     #define BTN_EN1 11
     #define BTN_EN2 10
-    #define BTN_ENC 12  //the click
+    #define BTN_ENC -1//12  //the click
 
 #endif
 
@@ -548,7 +548,7 @@
 #define KILL_PIN           -1
 
 #ifdef RAMPS_V_1_0 // RAMPS_V_1_0
-  #define HEATER_0_PIN     12    // RAMPS 1.0
+  #define HEATER_0_PIN     -1    // RAMPS 1.0
   #define HEATER_BED_PIN   -1    // RAMPS 1.0
   #define FAN_PIN          11    // RAMPS 1.0
 #else // RAMPS_V_1_1 or RAMPS_V_1_2
@@ -607,7 +607,7 @@
 #define Z_STOP_PIN          4
 
 #define E0_STEP_PIN         11
-#define E0_DIR_PIN          12
+#define E0_DIR_PIN          -1//12
 #define E0_ENABLE_PIN       -1
 
 #define SDPOWER          -1
@@ -689,7 +689,7 @@
     #define DEBUG_PIN        0
 
     //our RS485 pins
-    #define TX_ENABLE_PIN 12
+    #define TX_ENABLE_PIN -1//12
     #define RX_ENABLE_PIN 13
 
 
@@ -736,7 +736,7 @@
 #define LED_PIN            -1
 
 #define FAN_PIN            -1
-#if FAN_PIN == 12 || FAN_PIN ==13
+#if FAN_PIN == -1/*12*/ || FAN_PIN ==13
 #define FAN_SOFT_PWM
 #endif
 
@@ -758,7 +758,7 @@
 
 #ifdef SANGUINOLOLU_V_1_2
 
-#define HEATER_BED_PIN     12 // (bed)
+#define HEATER_BED_PIN     -1//12 // (bed)
 #define X_ENABLE_PIN       14
 #define Y_ENABLE_PIN       14
 #define Z_ENABLE_PIN       26
@@ -886,7 +886,7 @@
 #define SDSS               53
 #define LED_PIN            13
 #define FAN_PIN            7
-#define PS_ON_PIN          12
+#define PS_ON_PIN          -1//12
 #define KILL_PIN           -1
 #define SUICIDE_PIN        54  //PIN that has to be turned on right after start, to keep power flowing.
 
@@ -1114,7 +1114,7 @@
 #define LCD_PINS_D6        41
 #define LCD_PINS_D7        40
 #define BTN_EN1            11
-#define BTN_EN2            12
+#define BTN_EN2            -1//12
 #define BTN_ENC            43
 
 #endif //MOTHERBOARD==80
@@ -1291,7 +1291,7 @@
 #define PS_ON_PIN         14
 #define KILL_PIN           -1
 
-#define HEATER_0_PIN       12 // (extruder)
+#define HEATER_0_PIN       -1//12 // (extruder)
 
 #define HEATER_1_PIN       16 // (bed)
 #define X_ENABLE_PIN       19
@@ -1473,7 +1473,7 @@
 
 #define X_STEP_PIN 37
 #define X_DIR_PIN 48
-#define X_MIN_PIN 12
+#define X_MIN_PIN -1//12
 #define X_MAX_PIN 24
 #define X_ENABLE_PIN 29
 #define X_MS1_PIN 40
@@ -1583,7 +1583,7 @@
 
 
 #define FAN_PIN            7 // IO pin. Buffer needed
-#define PS_ON_PIN          12
+#define PS_ON_PIN          -1//12
 #define KILL_PIN           -1
 
 #define HEATER_0_PIN       9    // EXTRUDER 1
@@ -1688,7 +1688,7 @@
  
  #define FAN_PIN 7
  #define FAN2_PIN 6
- #define PS_ON_PIN 12
+ #define PS_ON_PIN -1//12
  #define KILL_PIN -1
  
  #define HEATER_0_PIN 9 // EXTRUDER 1
