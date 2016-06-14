@@ -84,7 +84,7 @@
 // #define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
 
 // This defines the number of extruders
-#define EXTRUDERS 2
+#define EXTRUDERS 1
 
 //// The following define selects which power supply you have. Please choose the one that matches your setup
 // 1 = ATX
@@ -133,7 +133,7 @@
 // 110 is Pt100 with 1k pullup (non standard)
 
 #define TEMP_SENSOR_0 5
-#define TEMP_SENSOR_1 5
+#define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_BED 5
 
@@ -444,7 +444,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define DEFAULT_MAX_FEEDRATE          {160, 160, 10, 10000}    // (mm/sec)800
 #define DEFAULT_MAX_ACCELERATION      {9000,9000,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for skeinforge 40+, for older versions raise them a lot.8000
 
-#define DEFAULT_ACCELERATION          6000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
+#define DEFAULT_ACCELERATION          6000    // X, Y, Z and E max acceleration in mm/s^2 for printing moves1000
 #define DEFAULT_RETRACT_ACCELERATION  6000   // X, Y, Z and E max acceleration in mm/s^2 for r retracts
 
 // Offset of the extruders (uncomment if using more than one and relying on firmware to position when changing).
@@ -669,18 +669,18 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // Otherwise the RED led is on. There is 1C hysteresis.
 //#define TEMP_STAT_LEDS
 
-
-// If you want to connect and control an RGB strip from the menu uncomment this.
-#define LEDCONTROL
-#ifdef LEDCONTROL
-// Declare pin numbers for the RGB channels.
-#define REDPIN 41
-#define GREENPIN 40
+// If you want to connect and control an RGB strip from the menu uncomment this.		
+#define LEDCONTROL		
+#ifdef LEDCONTROL		
+// Declare pin numbers for the RGB channels.		
+#define REDPIN 41		
+#define GREENPIN 40		
 #define BLUEPIN 12
-// Declare STARTVALUES for the RGB channels NOTE: for VELLEMAN motherboard only 0 or 1 is possible.
-#define REDSTARTVAL 1
-#define GREENSTARTVAL 1
-#define BLUESTARTVAL 1
+		
+// Declare STARTVALUES for the RGB channels NOTE: for VELLEMAN motherboard only 0 or 1 is possible.		
+#define REDSTARTVAL 1		
+#define GREENSTARTVAL 1		
+#define BLUESTARTVAL 1		
 #endif
 
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
