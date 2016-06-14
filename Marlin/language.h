@@ -74,7 +74,7 @@
 // Please note these can be 20 characters!
 
         #define MSG_SPLASH_NAME " VERTEX  3D PRINTER"
-        #define MSG_SPLASH_FIRMWARE "M:1.0 V:1.1  HEADS:1"
+        #define MSG_SPLASH_FIRMWARE "M:1.0 V:1.1  HEADS:2"
         #define MSG_SPLASH_WEBSITE1 " vertex3dprinter.eu"
         #define MSG_SPLASH_WEBSITE2 "    velleman.eu"
 
