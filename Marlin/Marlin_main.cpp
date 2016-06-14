@@ -182,6 +182,8 @@
 //===========================================================================
 //=============================public variables=============================
 //===========================================================================
+
+
 #ifdef SDSUPPORT
 CardReader card;
 #endif
@@ -516,9 +518,8 @@ void setup()
   st_init();    // Initialize stepper, this enables interrupts!
   setup_photpin();
   servo_init();
-
+  lcd_splashscreen();
   lcd_init();
-  _delay_ms(1000);	// wait 1sec to display the splash screen
 
   #if defined(CONTROLLERFAN_PIN) && CONTROLLERFAN_PIN > -1
     SET_OUTPUT(CONTROLLERFAN_PIN); //Set pin used for driver cooling fan
