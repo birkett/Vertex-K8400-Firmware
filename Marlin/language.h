@@ -46,8 +46,8 @@
   #define MACHINE_NAME "Rumba"
   #define FIRMWARE_URL "https://github.com/MarlinFirmware/Marlin"
 #elif MB(3DRAG)
-  #define MACHINE_NAME "3Drag"
-  #define FIRMWARE_URL "http://3dprint.elettronicain.it/"
+  #define MACHINE_NAME "Vertex"
+  #define FIRMWARE_URL "http://www.vertex3dprinter.eu/"
 #elif MB(5DPRINT)
   #define MACHINE_NAME "Makibox"
   #define FIRMWARE_URL "https://github.com/MarlinFirmware/Marlin"

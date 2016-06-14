@@ -1,3 +1,4 @@
+//ULTRALCD.CPP
 #include "temperature.h"
 #include "ultralcd.h"
 #ifdef ULTRA_LCD
@@ -54,6 +55,8 @@ static void lcd_main_menu();
 static void lcd_tune_menu();
 static void lcd_prepare_menu();
 static void lcd_move_menu();
+static void lcd_load_menu();
+static void lcd_unload_menu();
 static void lcd_control_menu();
 static void lcd_control_temperature_menu();
 static void lcd_control_temperature_preheat_pla_settings_menu();
@@ -65,6 +68,7 @@ static void lcd_set_contrast();
 #endif
 static void lcd_control_retract_menu();
 static void lcd_sdcard_menu();
+static void lcd_firmware_menu();
 
 #ifdef DELTA_CALIBRATION_MENU
 static void lcd_delta_calibrate_menu();
@@ -98,14 +102,14 @@ static void menu_action_setting_edit_callback_float51(const char* pstr, float* p
 static void menu_action_setting_edit_callback_float52(const char* pstr, float* ptr, float minValue, float maxValue, menuFunc_t callbackFunc);
 static void menu_action_setting_edit_callback_long5(const char* pstr, unsigned long* ptr, unsigned long minValue, unsigned long maxValue, menuFunc_t callbackFunc);
 
-#define ENCODER_FEEDRATE_DEADZONE 10
+#define ENCODER_FEEDRATE_DEADZONE 2
 
 #if !defined(LCD_I2C_VIKI)
   #ifndef ENCODER_STEPS_PER_MENU_ITEM
-    #define ENCODER_STEPS_PER_MENU_ITEM 5
+    #define ENCODER_STEPS_PER_MENU_ITEM 1
   #endif
   #ifndef ENCODER_PULSES_PER_STEP
-    #define ENCODER_PULSES_PER_STEP 1
+    #define ENCODER_PULSES_PER_STEP 4
   #endif
 #else
   #ifndef ENCODER_STEPS_PER_MENU_ITEM
@@ -369,6 +373,13 @@ static void lcd_main_menu()
 #endif
     }
 #endif
+    
+    if (movesplanned() || IS_SD_PRINTING)
+    {    }
+    else{
+        MENU_ITEM(function, MSG_FIRMWARE, lcd_firmware_menu);
+    }
+    
     END_MENU();
 }
 
@@ -426,9 +437,9 @@ static void lcd_tune_menu()
 #if TEMP_SENSOR_1 != 0
     MENU_ITEM_EDIT(int3, MSG_NOZZLE1, &target_temperature[1], 0, HEATER_1_MAXTEMP - 15);
 #endif
-#if TEMP_SENSOR_2 != 0
-    MENU_ITEM_EDIT(int3, MSG_NOZZLE2, &target_temperature[2], 0, HEATER_2_MAXTEMP - 15);
-#endif
+//#if TEMP_SENSOR_2 != 0
+//    MENU_ITEM_EDIT(int3, MSG_NOZZLE2, &target_temperature[2], 0, HEATER_2_MAXTEMP - 15);
+//#endif
 #if TEMP_SENSOR_BED != 0
     MENU_ITEM_EDIT(int3, MSG_BED, &target_temperature_bed, 0, BED_MAXTEMP - 15);
 #endif
@@ -438,9 +449,9 @@ static void lcd_tune_menu()
 #if TEMP_SENSOR_1 != 0
     MENU_ITEM_EDIT(int3, MSG_FLOW1, &extruder_multiply[1], 10, 999);
 #endif
-#if TEMP_SENSOR_2 != 0
-    MENU_ITEM_EDIT(int3, MSG_FLOW2, &extruder_multiply[2], 10, 999);
-#endif
+//#if TEMP_SENSOR_2 != 0
+//    MENU_ITEM_EDIT(int3, MSG_FLOW2, &extruder_multiply[2], 10, 999);
+//#endif
 
 #ifdef BABYSTEPPING
     #ifdef BABYSTEP_XY
@@ -473,7 +484,7 @@ void lcd_preheat_abs0()
     setWatch(); // heater sanity check timer
 }
 
-#if TEMP_SENSOR_1 != 0 //2nd extruder preheat
+#if TEMP_SENSOR_1 >= 0 //2nd extruder preheat
 void lcd_preheat_pla1()
 {
     setTargetHotend1(plaPreheatHotendTemp);
@@ -493,7 +504,7 @@ void lcd_preheat_abs1()
 }
 #endif //2nd extruder preheat
 
-#if TEMP_SENSOR_2 != 0 //3 extruder preheat
+#if TEMP_SENSOR_2 >= 0 //3 extruder preheat
 void lcd_preheat_pla2()
 {
     setTargetHotend2(plaPreheatHotendTemp);
@@ -513,7 +524,7 @@ void lcd_preheat_abs2()
 }
 #endif //3 extruder preheat
 
-#if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 //more than one extruder present
+#if TEMP_SENSOR_1 >= 0 || TEMP_SENSOR_2 != 0 //more than one extruder present
 void lcd_preheat_pla012()
 {
     setTargetHotend0(plaPreheatHotendTemp);
@@ -607,15 +618,13 @@ static void lcd_prepare_menu()
 {
     START_MENU();
     MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
-#ifdef SDSUPPORT
-    #ifdef MENU_ADDAUTOSTART
-      MENU_ITEM(function, MSG_AUTOSTART, lcd_autostart_sd);
-    #endif
-#endif
-    MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
     MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
     MENU_ITEM(function, MSG_SET_HOME_OFFSETS, lcd_set_home_offsets);
     //MENU_ITEM(gcode, MSG_SET_ORIGIN, PSTR("G92 X0 Y0 Z0"));
+
+    MENU_ITEM(submenu, MSG_LOAD_FILAMENT, lcd_load_menu);
+    MENU_ITEM(submenu, MSG_UNLOAD_FILAMENT, lcd_unload_menu);
+
 #if TEMP_SENSOR_0 != 0
   #if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 || TEMP_SENSOR_BED != 0
     MENU_ITEM(submenu, MSG_PREHEAT_PLA, lcd_preheat_pla_menu);
@@ -625,6 +634,14 @@ static void lcd_prepare_menu()
     MENU_ITEM(function, MSG_PREHEAT_ABS, lcd_preheat_abs0);
   #endif
 #endif
+MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
+#ifdef SDSUPPORT
+    #ifdef MENU_ADDAUTOSTART
+      MENU_ITEM(function, MSG_AUTOSTART, lcd_autostart_sd);
+    #endif
+#endif
+    MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
+    //MENU_ITEM(gcode, MSG_SET_ORIGIN, PSTR("G92 X0 Y0 Z0"));
     MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);
 #if PS_ON_PIN > -1
     if (powersupply)
@@ -634,7 +651,6 @@ static void lcd_prepare_menu()
         MENU_ITEM(gcode, MSG_SWITCH_PS_ON, PSTR("M80"));
     }
 #endif
-    MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
     END_MENU();
 }
 
@@ -708,6 +724,7 @@ static void lcd_move_menu_axis()
     {
         MENU_ITEM(submenu, MSG_MOVE_Z, lcd_move_z);
         MENU_ITEM(submenu, MSG_MOVE_E, lcd_move_e);
+        //MENU_ITEM(submenu, MSG_MOVE_E1, lcd_move_e1);
     }
     END_MENU();
 }
@@ -730,12 +747,322 @@ static void lcd_move_menu_01mm()
 
 static void lcd_move_menu()
 {
-    START_MENU();
+    START_MENU();  
     MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
     MENU_ITEM(submenu, MSG_MOVE_10MM, lcd_move_menu_10mm);
     MENU_ITEM(submenu, MSG_MOVE_1MM, lcd_move_menu_1mm);
     MENU_ITEM(submenu, MSG_MOVE_01MM, lcd_move_menu_01mm);
     //TODO:X,Y,Z,E
+    END_MENU();
+}
+
+static void lcd_print_load_message()
+{
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print(MSG_LOAD_TEXT0);
+  lcd.setCursor(0, 1);
+  lcd.print(MSG_LOAD_TEXT1);
+  lcd.setCursor(0, 2);
+  lcd.print(MSG_LOAD_TEXT2);
+  lcd.setCursor(0, 3);
+  lcd.print(MSG_LOAD_TEXT3);
+  delay(1000);
+  while(1){
+    if((READ(BTN_ENC)==0) || (READ(BTN_EN1)==0) || (READ(BTN_EN2)==0))
+      {
+        break;
+      }
+  }
+}
+
+static void lcd_load_menu_EXT1_ABS()
+{
+  lcd_print_load_message();
+  lcd_return_to_status();
+  enquecommand_P(PSTR("M117 Preparing..."));
+  enquecommand_P(PSTR("M106 S165"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M104 T0 S245"));
+  enquecommand_P(PSTR("M109 T0 S245"));
+  enquecommand_P(PSTR("G92 E0"));
+  enquecommand_P(PSTR("M83"));
+  enquecommand_P(PSTR("G1 E300 F2000"));
+  enquecommand_P(PSTR("G1 E200 F1000"));
+  enquecommand_P(PSTR("M117 Feeding filament"));
+  enquecommand_P(PSTR("G1 E60 F50"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("M104 T0 S0"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M84"));
+  enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void lcd_load_menu_EXT1_PLA()
+{
+  lcd_print_load_message();
+  lcd_return_to_status();
+  enquecommand_P(PSTR("M117 Preparing..."));
+  enquecommand_P(PSTR("M106 S165"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M104 T0 S210"));
+  enquecommand_P(PSTR("M109 T0 S210"));
+  enquecommand_P(PSTR("G92 E0"));
+  enquecommand_P(PSTR("M83"));
+  enquecommand_P(PSTR("G1 E300 F2000"));
+  enquecommand_P(PSTR("G1 E200 F1000"));
+  enquecommand_P(PSTR("M117 Feeding filament"));
+  enquecommand_P(PSTR("G1 E60 F50"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("M104 T0 S0"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M84"));
+  enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void lcd_load_menu_EXT2_ABS()
+{
+  lcd_print_load_message();
+  lcd_return_to_status();
+  enquecommand_P(PSTR("M117 Preparing..."));
+  enquecommand_P(PSTR("M106 S165"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("M104 T1 S245"));
+  enquecommand_P(PSTR("M109 T1 S245"));
+  enquecommand_P(PSTR("G92 E0"));
+  enquecommand_P(PSTR("M83"));
+  enquecommand_P(PSTR("G1 E300 F2000"));
+  enquecommand_P(PSTR("G1 E200 F1000"));
+  enquecommand_P(PSTR("M117 Feeding filament"));
+  enquecommand_P(PSTR("G1 E60 F50"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("M104 T1 S0"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M84"));
+  enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void lcd_load_menu_EXT2_PLA()
+{  
+  lcd_print_load_message();
+  lcd_return_to_status();
+  enquecommand_P(PSTR("M117 Preparing..."));
+  enquecommand_P(PSTR("M106 S165"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("M104 T1 S210"));
+  enquecommand_P(PSTR("M109 T1 S210"));
+  enquecommand_P(PSTR("G92 E0"));
+  enquecommand_P(PSTR("M83"));
+  enquecommand_P(PSTR("G1 E300 F2000"));
+  enquecommand_P(PSTR("G1 E200 F1000"));
+  enquecommand_P(PSTR("M117 Feeding filament"));
+  enquecommand_P(PSTR("G1 E60 F50"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("M104 T1 S0"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M84"));
+  enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void lcd_unload_menu_EXT1_ABS()
+{
+  lcd_return_to_status();
+  enquecommand_P(PSTR("M117 Preparing..."));
+  enquecommand_P(PSTR("M106 S165"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M104 T0 S245"));
+  enquecommand_P(PSTR("M109 T0 S245"));
+  enquecommand_P(PSTR("G92 E0"));
+  enquecommand_P(PSTR("M83"));
+  enquecommand_P(PSTR("G1 E10 F50"));
+  enquecommand_P(PSTR("M117 Unloading filament"));
+  enquecommand_P(PSTR("G1 E-300 F2000"));
+  enquecommand_P(PSTR("G1 E-300 F2000"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("M104 T0 S0"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M84"));
+  enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void lcd_unload_menu_EXT1_PLA()
+{
+  lcd_return_to_status();
+  enquecommand_P(PSTR("M117 Preparing..."));
+  enquecommand_P(PSTR("M106 S165"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M104 T0 S210"));
+  enquecommand_P(PSTR("M109 T0 S210"));
+  enquecommand_P(PSTR("G92 E0"));
+  enquecommand_P(PSTR("M83"));
+  enquecommand_P(PSTR("G1 E10 F50"));
+  enquecommand_P(PSTR("M117 Unloading filament"));
+  enquecommand_P(PSTR("G1 E-300 F2000"));
+  enquecommand_P(PSTR("G1 E-300 F2000"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("M104 T0 S0"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M84"));
+  enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void lcd_unload_menu_EXT2_ABS()
+{
+  lcd_return_to_status();
+  enquecommand_P(PSTR("M117 Preparing..."));
+  enquecommand_P(PSTR("M106 S165"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("M104 T1 S245"));
+  enquecommand_P(PSTR("M109 T1 S245"));
+  enquecommand_P(PSTR("G92 E0"));
+  enquecommand_P(PSTR("M83"));
+  enquecommand_P(PSTR("G1 E10 F50"));
+  enquecommand_P(PSTR("M117 Unloading filament"));
+  enquecommand_P(PSTR("G1 E-300 F2000"));
+  enquecommand_P(PSTR("G1 E-300 F2000"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("M104 T1 S0"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M84"));
+  enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void lcd_unload_menu_EXT2_PLA()
+{
+  lcd_return_to_status();
+  enquecommand_P(PSTR("M117 Preparing..."));
+  enquecommand_P(PSTR("M106 S165"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("T1"));
+  enquecommand_P(PSTR("M104 T1 S210"));
+  enquecommand_P(PSTR("M109 T1 S210"));
+  enquecommand_P(PSTR("G92 E0"));
+  enquecommand_P(PSTR("M83"));
+  enquecommand_P(PSTR("G1 E10 F50"));
+  enquecommand_P(PSTR("M117 Unloading filament"));
+  enquecommand_P(PSTR("G1 E-300 F2000"));
+  enquecommand_P(PSTR("G1 E-300 F2000"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  enquecommand_P(PSTR("M104 T1 S0"));
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M84"));
+  enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void lcd_load_menu_EXT1()
+{
+  START_MENU();  
+  MENU_ITEM(back, MSG_LOAD_FILAMENT, lcd_load_menu);
+  MENU_ITEM(function, MSG_LOAD_ABS_EX1, lcd_load_menu_EXT1_ABS);
+  MENU_ITEM(function, MSG_LOAD_PLA_EX1, lcd_load_menu_EXT1_PLA);
+  END_MENU();
+}
+
+static void lcd_load_menu_EXT2()
+{
+  START_MENU();  
+  MENU_ITEM(back, MSG_LOAD_FILAMENT, lcd_load_menu);
+  MENU_ITEM(function, MSG_LOAD_ABS_EX2, lcd_load_menu_EXT2_ABS);
+  MENU_ITEM(function, MSG_LOAD_PLA_EX2, lcd_load_menu_EXT2_PLA);
+  END_MENU();
+}
+
+static void lcd_unload_menu_EXT1()
+{
+  START_MENU();  
+  MENU_ITEM(back, MSG_UNLOAD_FILAMENT, lcd_unload_menu);
+  MENU_ITEM(function, MSG_UNLOAD_ABS_EX1, lcd_unload_menu_EXT1_ABS);
+  MENU_ITEM(function, MSG_UNLOAD_PLA_EX1, lcd_unload_menu_EXT1_PLA);
+  END_MENU();
+}
+
+static void lcd_unload_menu_EXT2()
+{
+  START_MENU();  
+  MENU_ITEM(back, MSG_UNLOAD_FILAMENT, lcd_unload_menu);
+  MENU_ITEM(function, MSG_UNLOAD_ABS_EX2, lcd_unload_menu_EXT2_ABS);
+  MENU_ITEM(function, MSG_UNLOAD_PLA_EX2, lcd_unload_menu_EXT2_PLA);
+  END_MENU();
+}
+
+static void lcd_load_menu()
+{
+    START_MENU();
+      MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
+      MENU_ITEM(submenu, MSG_EXTRUDER_1, lcd_load_menu_EXT1);  
+      //MENU_ITEM(submenu, MSG_EXTRUDER_2, lcd_load_menu_EXT2);
+    END_MENU();
+}
+
+static void lcd_unload_menu()
+{
+    START_MENU(); 
+      MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
+      MENU_ITEM(submenu, MSG_EXTRUDER_1, lcd_unload_menu_EXT1);  
+      //MENU_ITEM(submenu, MSG_EXTRUDER_2, lcd_unload_menu_EXT2); 
     END_MENU();
 }
 
@@ -778,9 +1105,9 @@ static void lcd_control_temperature_menu()
 #if TEMP_SENSOR_1 != 0
     MENU_ITEM_EDIT(int3, MSG_NOZZLE1, &target_temperature[1], 0, HEATER_1_MAXTEMP - 15);
 #endif
-#if TEMP_SENSOR_2 != 0
-    MENU_ITEM_EDIT(int3, MSG_NOZZLE2, &target_temperature[2], 0, HEATER_2_MAXTEMP - 15);
-#endif
+//#if TEMP_SENSOR_2 != 0
+//    MENU_ITEM_EDIT(int3, MSG_NOZZLE2, &target_temperature[2], 0, HEATER_2_MAXTEMP - 15);
+//#endif
 #if TEMP_SENSOR_BED != 0
     MENU_ITEM_EDIT(int3, MSG_BED, &target_temperature_bed, 0, BED_MAXTEMP - 15);
 #endif
@@ -1120,6 +1447,107 @@ static void menu_action_setting_edit_callback_bool(const char* pstr, bool* ptr, 
 	(*callback)();
 }
 #endif//ULTIPANEL
+
+char *logosplash[] = {
+  "\xff\x20\xff\x20\x20\xff\xff\xff\x20\x20\xff\xff\xff\x20\x20\xff\xff\xff\x20\x20\xff\xff\xff\x20\x20\xff\x20\xff\x20\x20",
+  "\xff\x20\xff\x20\x20\xff\xff\x20\x20\x20\xff\xff\xff\x20\x20\x20\xff\x20\x20\x20\xff\xff\x20\x20\x20\x20\xff\x20\x20\x20",
+  "\xff\x20\xff\x20\x20\xff\x20\x20\x20\x20\xff\xff\x20\x20\x20\x20\xff\x20\x20\x20\xff\x20\x20\x20\x20\x20\xff\x20\x20\x20",
+  "\x20\xff\x20\x20\x20\xff\xff\xff\x20\x20\xff\x20\xff\x20\x20\x20\xff\x20\x20\x20\xff\xff\xff\x20\x20\xff\x20\xff\x20\x20"
+};
+
+void lcd_firmwarescreen()
+{ 
+  lcd.display();
+  lcd.setCursor(0, 0);
+  lcd.print(MSG_SPLASH_NAME);
+  lcd.setCursor(0, 1);
+  lcd.print(MSG_SPLASH_FIRMWARE);
+  lcd.setCursor(0, 2);
+  lcd.print(MSG_SPLASH_WEBSITE1);
+  lcd.setCursor(0, 3);
+  lcd.print(MSG_SPLASH_WEBSITE2);
+}
+
+void lcd_firmware_menu()
+{
+  lcd.clear();
+  lcd_firmwarescreen();
+  delay(1000);
+  while(1){
+    if((READ(BTN_ENC)==0) || (READ(BTN_EN1)==0) || (READ(BTN_EN2)==0))
+      {
+        break;
+      }
+  } 
+  lcd_return_to_status();
+}
+
+void lcd_splashscreen()
+{ 
+  lcd_implementation_init();   //
+  lcd.clear();
+  
+  pinMode(BTN_ENC,INPUT);
+  pinMode(BTN_EN1,INPUT);
+  pinMode(BTN_EN2,INPUT);
+  WRITE(BTN_EN1,HIGH);
+  WRITE(BTN_EN2,HIGH);
+  WRITE(BTN_ENC,HIGH);
+ 
+  int width = 20;
+  int stp = 2;
+  int lngth = 30;
+  
+    for (int m=width-1; m>=0; m-=stp) {
+    for (int i=0; i<4; i++) {
+      String line = logosplash[i];
+      lcd.setCursor(m, i);
+      lcd.print(line.substring(0, width - m));
+    }
+    lcd.display();
+    for (int n=0; n<255; n++) {
+      delay(1);
+      if((READ(BTN_ENC)==0) || (READ(BTN_EN1)==0) || (READ(BTN_EN2)==0))
+      {
+        goto bailout;
+      }
+    }
+    lcd.noDisplay();
+   }
+  
+    for (int m=1; m<lngth; m+=stp) {
+      for (int i=0; i<4; i++) {
+        String line = logosplash[i];
+        lcd.setCursor(0, i);
+        lcd.print(line.substring(m, 20+m));
+      }
+      lcd.display();
+      for (int b=0; b<255; b++) {
+        delay(1);
+        if((READ(BTN_ENC)==0) || (READ(BTN_EN1)==0) || (READ(BTN_EN2)==0))
+        {
+          goto bailout;
+        }
+      }
+      lcd.noDisplay();
+    } 
+
+  lcd_firmwarescreen();
+  
+  for (int b=0; b<255; b++) {
+        delay(11);
+        if((READ(BTN_ENC)==0) || (READ(BTN_EN1)==0) || (READ(BTN_EN2)==0))
+        {
+          goto bailout;
+        }
+      }
+      
+  bailout:
+  
+  lcd.clear();
+  _delay_ms(100);
+  
+}
 
 /** LCD API **/
 void lcd_init()
