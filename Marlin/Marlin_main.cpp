@@ -558,6 +558,15 @@ void servo_init()
 
 void setup()
 {
+  #ifdef LEDCONTROL		
+    pinMode(REDPIN, OUTPUT);		
+    pinMode(GREENPIN, OUTPUT);		
+    pinMode(BLUEPIN, OUTPUT);		
+    analogWrite(REDPIN, 0);		
+    analogWrite(GREENPIN, 0);		
+    analogWrite(BLUEPIN, 0);		
+  #endif
+
   setup_killpin();
   setup_powerhold();
   MYSERIAL.begin(BAUDRATE);
@@ -3482,9 +3491,19 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
     } 
     break; 
     #endif
-    
 
 
+#ifdef LEDCONTROL    
+    case 420: //M420 - Rxxx Exxx Bxxx 		
+    {
+        if (code_seen('R')) digitalWrite(REDPIN, code_value() != 0 ? 1 : 0);
+      
+        if (code_seen('E')) digitalWrite(GREENPIN, code_value() != 0 ? 1 : 0);
+      
+        if (code_seen('B')) digitalWrite(BLUEPIN, code_value() != 0 ? 1 : 0);
+    }
+    break;
+#endif
 
 
     case 500: // M500 Store settings in EEPROM

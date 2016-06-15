@@ -718,6 +718,20 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // Otherwise the RED led is on. There is 1C hysteresis.
 //#define TEMP_STAT_LEDS
 
+// If you want to connect and control an RGB strip from the menu uncomment this.		
+#define LEDCONTROL		
+#ifdef LEDCONTROL		
+ // Declare pin numbers for the RGB channels.		
+# define REDPIN 41		
+# define GREENPIN 40		
+# define BLUEPIN 12
+		
+ // Declare STARTVALUES for the RGB channels NOTE: for VELLEMAN motherboard only 0 or 1 is possible.		
+# define REDSTARTVAL 1		
+# define GREENSTARTVAL 1		
+# define BLUESTARTVAL 1		
+#endif
+
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
 // which is not ass annoying as with the hardware PWM. On the other hand, if this frequency
 // is too low, you should also increment SOFT_PWM_SCALE.

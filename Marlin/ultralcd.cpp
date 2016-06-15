@@ -58,6 +58,7 @@ static void lcd_move_menu();
 static void lcd_load_menu();
 static void lcd_unload_menu();
 static void lcd_control_menu();
+static void lcd_led_menu();
 static void lcd_control_temperature_menu();
 static void lcd_control_temperature_preheat_pla_settings_menu();
 static void lcd_control_temperature_preheat_abs_settings_menu();
@@ -336,6 +337,69 @@ static void lcd_sdcard_stop()
 }
 
 /* Menu implementation */
+static void lcd_set_led_white()		
+{		
+   digitalWrite(REDPIN, 1);		
+   digitalWrite(GREENPIN, 1);		
+   digitalWrite(BLUEPIN, 1);		
+}		
+static void lcd_set_led_red()		
+{		
+   digitalWrite(REDPIN, 1);		
+   digitalWrite(GREENPIN, 0);		
+   digitalWrite(BLUEPIN, 0);		
+}		
+static void lcd_set_led_green()		
+{		
+   digitalWrite(REDPIN, 0);		
+   digitalWrite(GREENPIN, 1);		
+   digitalWrite(BLUEPIN, 0);		
+}		
+static void lcd_set_led_blue()		
+{		
+   digitalWrite(REDPIN, 0);		
+   digitalWrite(GREENPIN, 0);		
+   digitalWrite(BLUEPIN, 1);		
+}		
+static void lcd_set_led_lightblue()		
+{		
+   digitalWrite(REDPIN, 0);		
+   digitalWrite(GREENPIN, 1);		
+   digitalWrite(BLUEPIN, 1);		
+}		
+static void lcd_set_led_purple()		
+{		
+   digitalWrite(REDPIN, 1);		
+   digitalWrite(GREENPIN, 0);		
+   digitalWrite(BLUEPIN, 1);		
+}		
+static void lcd_set_led_yellow()		
+{		
+   digitalWrite(REDPIN, 1);		
+   digitalWrite(GREENPIN, 1);		
+   digitalWrite(BLUEPIN, 0);		
+}		
+static void lcd_set_led_off()		
+{		
+   digitalWrite(REDPIN, 0);		
+   digitalWrite(GREENPIN, 0);		
+   digitalWrite(BLUEPIN, 0);		
+}		
+static void lcd_led_menu()		
+{		
+  START_MENU();		
+    MENU_ITEM(back, MSG_MAIN, lcd_main_menu);		
+    MENU_ITEM(function, MSG_LED_WHITE, lcd_set_led_white);		
+    MENU_ITEM(function, MSG_LED_RED, lcd_set_led_red);		
+    MENU_ITEM(function, MSG_LED_GREEN, lcd_set_led_green);		
+    MENU_ITEM(function, MSG_LED_BLUE, lcd_set_led_blue);		
+    MENU_ITEM(function, MSG_LED_LIGHTBLUE, lcd_set_led_lightblue);		
+    MENU_ITEM(function, MSG_LED_PURPLE, lcd_set_led_purple);		
+    MENU_ITEM(function, MSG_LED_YELLOW, lcd_set_led_yellow);		
+    MENU_ITEM(function, MSG_LED_OFF, lcd_set_led_off);		
+  END_MENU();		
+}
+
 static void lcd_main_menu()
 {
     START_MENU();
@@ -377,7 +441,7 @@ static void lcd_main_menu()
     if (movesplanned() || IS_SD_PRINTING)
     {    }
     else{
-        MENU_ITEM(function, MSG_FIRMWARE, lcd_firmware_menu);
+        MENU_ITEM(submenu, MSG_FIRMWARE, lcd_firmware_menu);
     }
     
     END_MENU();
@@ -430,6 +494,9 @@ static void lcd_tune_menu()
 {
     START_MENU();
     MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+#ifdef LEDCONTROL		
+    MENU_ITEM(submenu, MSG_LED_MENU, lcd_led_menu);		
+#endif
     MENU_ITEM_EDIT(int3, MSG_SPEED, &feedmultiply, 10, 999);
 #if TEMP_SENSOR_0 != 0
     MENU_ITEM_EDIT(int3, MSG_NOZZLE, &target_temperature[0], 0, HEATER_0_MAXTEMP - 15);
@@ -619,6 +686,9 @@ static void lcd_prepare_menu()
     START_MENU();
     MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
     MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
+#ifdef LEDCONTROL		
+    MENU_ITEM(submenu, MSG_LED_MENU, lcd_led_menu);		
+#endif
     MENU_ITEM(function, MSG_SET_HOME_OFFSETS, lcd_set_home_offsets);
     //MENU_ITEM(gcode, MSG_SET_ORIGIN, PSTR("G92 X0 Y0 Z0"));
 
@@ -756,29 +826,8 @@ static void lcd_move_menu()
     END_MENU();
 }
 
-static void lcd_print_load_message()
+static void lcd_load_menu_EXT1_ABS_go()
 {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(MSG_LOAD_TEXT0);
-  lcd.setCursor(0, 1);
-  lcd.print(MSG_LOAD_TEXT1);
-  lcd.setCursor(0, 2);
-  lcd.print(MSG_LOAD_TEXT2);
-  lcd.setCursor(0, 3);
-  lcd.print(MSG_LOAD_TEXT3);
-  delay(1000);
-  while(1){
-    if((READ(BTN_ENC)==0) || (READ(BTN_EN1)==0) || (READ(BTN_EN2)==0))
-      {
-        break;
-      }
-  }
-}
-
-static void lcd_load_menu_EXT1_ABS()
-{
-  lcd_print_load_message();
   lcd_return_to_status();
   enquecommand_P(PSTR("M117 Preparing..."));
   enquecommand_P(PSTR("M106 S165"));
@@ -806,9 +855,18 @@ static void lcd_load_menu_EXT1_ABS()
   enquecommand_P(PSTR("M117 Vertex is ready     "));
 }
 
-static void lcd_load_menu_EXT1_PLA()
+static void lcd_load_menu_EXT1_ABS()
 {
-  lcd_print_load_message();
+  START_MENU();
+  MENU_ITEM(function, MSG_LOAD_TEXT0, lcd_load_menu_EXT1_ABS_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT1, lcd_load_menu_EXT1_ABS_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT2, lcd_load_menu_EXT1_ABS_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT3, lcd_load_menu_EXT1_ABS_go);
+  END_MENU();
+}
+
+static void lcd_load_menu_EXT1_PLA_go()
+{
   lcd_return_to_status();
   enquecommand_P(PSTR("M117 Preparing..."));
   enquecommand_P(PSTR("M106 S165"));
@@ -836,9 +894,18 @@ static void lcd_load_menu_EXT1_PLA()
   enquecommand_P(PSTR("M117 Vertex is ready     "));
 }
 
-static void lcd_load_menu_EXT2_ABS()
+static void lcd_load_menu_EXT1_PLA()
 {
-  lcd_print_load_message();
+  START_MENU();
+  MENU_ITEM(function, MSG_LOAD_TEXT0, lcd_load_menu_EXT1_PLA_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT1, lcd_load_menu_EXT1_PLA_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT2, lcd_load_menu_EXT1_PLA_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT3, lcd_load_menu_EXT1_PLA_go);
+  END_MENU();
+}
+
+static void lcd_load_menu_EXT2_ABS_go()
+{
   lcd_return_to_status();
   enquecommand_P(PSTR("M117 Preparing..."));
   enquecommand_P(PSTR("M106 S165"));
@@ -866,9 +933,18 @@ static void lcd_load_menu_EXT2_ABS()
   enquecommand_P(PSTR("M117 Vertex is ready     "));
 }
 
-static void lcd_load_menu_EXT2_PLA()
+static void lcd_load_menu_EXT2_ABS()
+{
+  START_MENU();
+  MENU_ITEM(function, MSG_LOAD_TEXT0, lcd_load_menu_EXT2_ABS_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT1, lcd_load_menu_EXT2_ABS_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT2, lcd_load_menu_EXT2_ABS_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT3, lcd_load_menu_EXT2_ABS_go);
+  END_MENU();
+}
+
+static void lcd_load_menu_EXT2_PLA_go()
 {  
-  lcd_print_load_message();
   lcd_return_to_status();
   enquecommand_P(PSTR("M117 Preparing..."));
   enquecommand_P(PSTR("M106 S165"));
@@ -894,6 +970,16 @@ static void lcd_load_menu_EXT2_PLA()
   enquecommand_P(PSTR("T0"));
   enquecommand_P(PSTR("M84"));
   enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void lcd_load_menu_EXT2_PLA()
+{
+  START_MENU();
+  MENU_ITEM(function, MSG_LOAD_TEXT0, lcd_load_menu_EXT2_PLA_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT1, lcd_load_menu_EXT2_PLA_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT2, lcd_load_menu_EXT2_PLA_go);
+  MENU_ITEM(function, MSG_LOAD_TEXT3, lcd_load_menu_EXT2_PLA_go);
+  END_MENU();
 }
 
 static void lcd_unload_menu_EXT1_ABS()
@@ -1016,8 +1102,8 @@ static void lcd_load_menu_EXT1()
 {
   START_MENU();  
   MENU_ITEM(back, MSG_LOAD_FILAMENT, lcd_load_menu);
-  MENU_ITEM(function, MSG_LOAD_ABS_EX1, lcd_load_menu_EXT1_ABS);
-  MENU_ITEM(function, MSG_LOAD_PLA_EX1, lcd_load_menu_EXT1_PLA);
+  MENU_ITEM(submenu, MSG_LOAD_ABS_EX1, lcd_load_menu_EXT1_ABS);
+  MENU_ITEM(submenu, MSG_LOAD_PLA_EX1, lcd_load_menu_EXT1_PLA);
   END_MENU();
 }
 
@@ -1025,8 +1111,8 @@ static void lcd_load_menu_EXT2()
 {
   START_MENU();  
   MENU_ITEM(back, MSG_LOAD_FILAMENT, lcd_load_menu);
-  MENU_ITEM(function, MSG_LOAD_ABS_EX2, lcd_load_menu_EXT2_ABS);
-  MENU_ITEM(function, MSG_LOAD_PLA_EX2, lcd_load_menu_EXT2_PLA);
+  MENU_ITEM(submenu, MSG_LOAD_ABS_EX2, lcd_load_menu_EXT2_ABS);
+  MENU_ITEM(submenu, MSG_LOAD_PLA_EX2, lcd_load_menu_EXT2_PLA);
   END_MENU();
 }
 
@@ -1470,16 +1556,12 @@ void lcd_firmwarescreen()
 
 void lcd_firmware_menu()
 {
-  lcd.clear();
-  lcd_firmwarescreen();
-  delay(1000);
-  while(1){
-    if((READ(BTN_ENC)==0) || (READ(BTN_EN1)==0) || (READ(BTN_EN2)==0))
-      {
-        break;
-      }
-  } 
-  lcd_return_to_status();
+  START_MENU();
+  MENU_ITEM(function, MSG_SPLASH_NAME_SMALL, lcd_return_to_status);
+  MENU_ITEM(function, MSG_SPLASH_FIRMWARE_SMALL, lcd_return_to_status);
+  MENU_ITEM(function, MSG_SPLASH_WEBSITE1_SMALL, lcd_return_to_status);
+  MENU_ITEM(function, MSG_SPLASH_WEBSITE2_SMALL, lcd_return_to_status);
+  END_MENU();
 }
 
 void lcd_splashscreen()
@@ -1493,7 +1575,16 @@ void lcd_splashscreen()
   WRITE(BTN_EN1,HIGH);
   WRITE(BTN_EN2,HIGH);
   WRITE(BTN_ENC,HIGH);
- 
+
+#ifdef LEDCONTROL		
+  pinMode(REDPIN, OUTPUT);		
+  pinMode(GREENPIN, OUTPUT);		
+  pinMode(BLUEPIN, OUTPUT);		
+  digitalWrite(REDPIN, REDSTARTVAL);		
+  digitalWrite(GREENPIN, GREENSTARTVAL);		
+  digitalWrite(BLUEPIN, BLUESTARTVAL);		
+#endif
+
   int width = 20;
   int stp = 2;
   int lngth = 30;
