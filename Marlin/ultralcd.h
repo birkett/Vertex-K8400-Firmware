@@ -97,6 +97,7 @@
 
 #else //no LCD
   FORCE_INLINE void lcd_update() {}
+  FORCE_INLINE void lcd_splashscreen() {}
   FORCE_INLINE void lcd_init() {}
   FORCE_INLINE void lcd_setstatus(const char* message) {}
   FORCE_INLINE void lcd_buttons_update() {}

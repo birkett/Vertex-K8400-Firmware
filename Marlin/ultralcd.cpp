@@ -826,20 +826,52 @@ static void lcd_move_menu()
     END_MENU();
 }
 
-static void lcd_load_menu_EXT1_ABS_go()
+static void load_extruder_start(short extruder)
 {
-  lcd_return_to_status();
   enquecommand_P(PSTR("M117 Preparing..."));
   enquecommand_P(PSTR("M106 S165"));
   enquecommand_P(PSTR("G28"));
   enquecommand_P(PSTR("G90"));
   enquecommand_P(PSTR("M82"));
   enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("T0"));
+  if(extruder == 1) {
+    enquecommand_P(PSTR("T0"));
+    enquecommand_P(PSTR("T1"));
+    enquecommand_P(PSTR("T0"));
+  }
+  if(extruder == 2) {
+    enquecommand_P(PSTR("T1"));
+    enquecommand_P(PSTR("T0"));
+    enquecommand_P(PSTR("T1"));
+  }
+}
+
+static void load_extruder1_abs()
+{
   enquecommand_P(PSTR("M104 T0 S245"));
   enquecommand_P(PSTR("M109 T0 S245"));
+}
+
+static void load_extruder2_abs()
+{
+  enquecommand_P(PSTR("M104 T1 S245"));
+  enquecommand_P(PSTR("M109 T1 S245"));
+}
+
+static void load_extruder1_pla()
+{
+  enquecommand_P(PSTR("M104 T0 S210"));
+  enquecommand_P(PSTR("M109 T0 S210"));
+}
+
+static void load_extruder2_pla()
+{
+  enquecommand_P(PSTR("M104 T1 S210"));
+  enquecommand_P(PSTR("M109 T1 S210"));
+}
+
+static void load_extruder_end(short extruder)
+{
   enquecommand_P(PSTR("G92 E0"));
   enquecommand_P(PSTR("M83"));
   enquecommand_P(PSTR("G1 E300 F2000"));
@@ -849,10 +881,45 @@ static void lcd_load_menu_EXT1_ABS_go()
   enquecommand_P(PSTR("G28"));
   enquecommand_P(PSTR("G90"));
   enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("M104 T0 S0"));
+  if(extruder == 1) {
+    enquecommand_P(PSTR("M104 T0 S0"));
+  }
+  if(extruder == 2) {
+    enquecommand_P(PSTR("M104 T1 S0"));
+  }
   enquecommand_P(PSTR("T0"));
   enquecommand_P(PSTR("M84"));
   enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void unload_extruder_end(short extruder)
+{
+  enquecommand_P(PSTR("G92 E0"));
+  enquecommand_P(PSTR("M83"));
+  enquecommand_P(PSTR("G1 E10 F50"));
+  enquecommand_P(PSTR("M117 Unloading filament"));
+  enquecommand_P(PSTR("G1 E-300 F2000"));
+  enquecommand_P(PSTR("G1 E-300 F2000"));
+  enquecommand_P(PSTR("G28"));
+  enquecommand_P(PSTR("G90"));
+  enquecommand_P(PSTR("M82"));
+  if(extruder == 1) {
+    enquecommand_P(PSTR("M104 T0 S0"));
+  }
+  if(extruder == 2) {
+    enquecommand_P(PSTR("M104 T1 S0"));
+  }
+  enquecommand_P(PSTR("T0"));
+  enquecommand_P(PSTR("M84"));
+  enquecommand_P(PSTR("M117 Vertex is ready     "));
+}
+
+static void lcd_load_menu_EXT1_ABS_go()
+{
+  lcd_return_to_status();
+  load_extruder_start(1);
+  load_extruder1_abs();
+  load_extruder_end(1);
 }
 
 static void lcd_load_menu_EXT1_ABS()
@@ -868,30 +935,9 @@ static void lcd_load_menu_EXT1_ABS()
 static void lcd_load_menu_EXT1_PLA_go()
 {
   lcd_return_to_status();
-  enquecommand_P(PSTR("M117 Preparing..."));
-  enquecommand_P(PSTR("M106 S165"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("M104 T0 S210"));
-  enquecommand_P(PSTR("M109 T0 S210"));
-  enquecommand_P(PSTR("G92 E0"));
-  enquecommand_P(PSTR("M83"));
-  enquecommand_P(PSTR("G1 E300 F2000"));
-  enquecommand_P(PSTR("G1 E200 F1000"));
-  enquecommand_P(PSTR("M117 Feeding filament"));
-  enquecommand_P(PSTR("G1 E60 F50"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("M104 T0 S0"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("M84"));
-  enquecommand_P(PSTR("M117 Vertex is ready     "));
+  load_extruder_start(1);
+  load_extruder1_pla();
+  load_extruder_end(1);
 }
 
 static void lcd_load_menu_EXT1_PLA()
@@ -907,30 +953,9 @@ static void lcd_load_menu_EXT1_PLA()
 static void lcd_load_menu_EXT2_ABS_go()
 {
   lcd_return_to_status();
-  enquecommand_P(PSTR("M117 Preparing..."));
-  enquecommand_P(PSTR("M106 S165"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("M104 T1 S245"));
-  enquecommand_P(PSTR("M109 T1 S245"));
-  enquecommand_P(PSTR("G92 E0"));
-  enquecommand_P(PSTR("M83"));
-  enquecommand_P(PSTR("G1 E300 F2000"));
-  enquecommand_P(PSTR("G1 E200 F1000"));
-  enquecommand_P(PSTR("M117 Feeding filament"));
-  enquecommand_P(PSTR("G1 E60 F50"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("M104 T1 S0"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("M84"));
-  enquecommand_P(PSTR("M117 Vertex is ready     "));
+  load_extruder_start(2);
+  load_extruder2_abs();
+  load_extruder_end(2);
 }
 
 static void lcd_load_menu_EXT2_ABS()
@@ -946,30 +971,9 @@ static void lcd_load_menu_EXT2_ABS()
 static void lcd_load_menu_EXT2_PLA_go()
 {  
   lcd_return_to_status();
-  enquecommand_P(PSTR("M117 Preparing..."));
-  enquecommand_P(PSTR("M106 S165"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("M104 T1 S210"));
-  enquecommand_P(PSTR("M109 T1 S210"));
-  enquecommand_P(PSTR("G92 E0"));
-  enquecommand_P(PSTR("M83"));
-  enquecommand_P(PSTR("G1 E300 F2000"));
-  enquecommand_P(PSTR("G1 E200 F1000"));
-  enquecommand_P(PSTR("M117 Feeding filament"));
-  enquecommand_P(PSTR("G1 E60 F50"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("M104 T1 S0"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("M84"));
-  enquecommand_P(PSTR("M117 Vertex is ready     "));
+  load_extruder_start(2);
+  load_extruder2_pla();
+  load_extruder_end(2);
 }
 
 static void lcd_load_menu_EXT2_PLA()
@@ -985,117 +989,33 @@ static void lcd_load_menu_EXT2_PLA()
 static void lcd_unload_menu_EXT1_ABS()
 {
   lcd_return_to_status();
-  enquecommand_P(PSTR("M117 Preparing..."));
-  enquecommand_P(PSTR("M106 S165"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("M104 T0 S245"));
-  enquecommand_P(PSTR("M109 T0 S245"));
-  enquecommand_P(PSTR("G92 E0"));
-  enquecommand_P(PSTR("M83"));
-  enquecommand_P(PSTR("G1 E10 F50"));
-  enquecommand_P(PSTR("M117 Unloading filament"));
-  enquecommand_P(PSTR("G1 E-300 F2000"));
-  enquecommand_P(PSTR("G1 E-300 F2000"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("M104 T0 S0"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("M84"));
-  enquecommand_P(PSTR("M117 Vertex is ready     "));
+  load_extruder_start(1);
+  load_extruder1_abs();
+  unload_extruder_end(1);
 }
 
 static void lcd_unload_menu_EXT1_PLA()
 {
   lcd_return_to_status();
-  enquecommand_P(PSTR("M117 Preparing..."));
-  enquecommand_P(PSTR("M106 S165"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("M104 T0 S210"));
-  enquecommand_P(PSTR("M109 T0 S210"));
-  enquecommand_P(PSTR("G92 E0"));
-  enquecommand_P(PSTR("M83"));
-  enquecommand_P(PSTR("G1 E10 F50"));
-  enquecommand_P(PSTR("M117 Unloading filament"));
-  enquecommand_P(PSTR("G1 E-300 F2000"));
-  enquecommand_P(PSTR("G1 E-300 F2000"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("M104 T0 S0"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("M84"));
-  enquecommand_P(PSTR("M117 Vertex is ready     "));
+  load_extruder_start(1);
+  load_extruder1_pla();
+  unload_extruder_end(1);
 }
 
 static void lcd_unload_menu_EXT2_ABS()
 {
   lcd_return_to_status();
-  enquecommand_P(PSTR("M117 Preparing..."));
-  enquecommand_P(PSTR("M106 S165"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("M104 T1 S245"));
-  enquecommand_P(PSTR("M109 T1 S245"));
-  enquecommand_P(PSTR("G92 E0"));
-  enquecommand_P(PSTR("M83"));
-  enquecommand_P(PSTR("G1 E10 F50"));
-  enquecommand_P(PSTR("M117 Unloading filament"));
-  enquecommand_P(PSTR("G1 E-300 F2000"));
-  enquecommand_P(PSTR("G1 E-300 F2000"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("M104 T1 S0"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("M84"));
-  enquecommand_P(PSTR("M117 Vertex is ready     "));
+  load_extruder_start(2);
+  load_extruder2_abs();
+  unload_extruder_end(2);
 }
 
 static void lcd_unload_menu_EXT2_PLA()
 {
   lcd_return_to_status();
-  enquecommand_P(PSTR("M117 Preparing..."));
-  enquecommand_P(PSTR("M106 S165"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("G0 F12000 X100 Y100 Z100"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("T1"));
-  enquecommand_P(PSTR("M104 T1 S210"));
-  enquecommand_P(PSTR("M109 T1 S210"));
-  enquecommand_P(PSTR("G92 E0"));
-  enquecommand_P(PSTR("M83"));
-  enquecommand_P(PSTR("G1 E10 F50"));
-  enquecommand_P(PSTR("M117 Unloading filament"));
-  enquecommand_P(PSTR("G1 E-300 F2000"));
-  enquecommand_P(PSTR("G1 E-300 F2000"));
-  enquecommand_P(PSTR("G28"));
-  enquecommand_P(PSTR("G90"));
-  enquecommand_P(PSTR("M82"));
-  enquecommand_P(PSTR("M104 T1 S0"));
-  enquecommand_P(PSTR("T0"));
-  enquecommand_P(PSTR("M84"));
-  enquecommand_P(PSTR("M117 Vertex is ready     "));
+  load_extruder_start(2);
+  load_extruder2_pla();
+  unload_extruder_end(2);
 }
 
 static void lcd_load_menu_EXT1()
