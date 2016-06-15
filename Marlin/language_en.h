@@ -8,7 +8,16 @@
 #ifndef LANGUAGE_EN_H
 #define LANGUAGE_EN_H
 
-#define WELCOME_MSG                         MACHINE_NAME " ready."
+// LCD Splashscreen Messages
+// Please note these can be 20 characters!
+
+#define MSG_SPLASH_NAME     				" VERTEX  3D PRINTER"
+#define MSG_SPLASH_FIRMWARE 				"M:1.0 V:1.1  HEADS:1"
+#define MSG_SPLASH_WEBSITE1 				" vertex3dprinter.eu"
+#define MSG_SPLASH_WEBSITE2 				"    velleman.eu"
+
+
+#define WELCOME_MSG                         MACHINE_NAME " is ready."
 #define MSG_SD_INSERTED                     "Card inserted"
 #define MSG_SD_REMOVED                      "Card removed"
 #define MSG_MAIN                            "Main"
@@ -40,16 +49,16 @@
 #define MSG_MOVE_X                          "Move X"
 #define MSG_MOVE_Y                          "Move Y"
 #define MSG_MOVE_Z                          "Move Z"
-#define MSG_MOVE_E                          "Extruder"
-#define MSG_MOVE_E1                         "Extruder2"
-#define MSG_MOVE_E2                         "Extruder3"
+#define MSG_MOVE_E                          "Extruder 1"
+#define MSG_MOVE_E1                         "Extruder 2"
+#define MSG_MOVE_E2                         "Extruder 3"
 #define MSG_MOVE_01MM                       "Move 0.1mm"
 #define MSG_MOVE_1MM                        "Move 1mm"
 #define MSG_MOVE_10MM                       "Move 10mm"
 #define MSG_SPEED                           "Speed"
-#define MSG_NOZZLE                          "Nozzle"
-#define MSG_NOZZLE1                         "Nozzle2"
-#define MSG_NOZZLE2                         "Nozzle3"
+#define MSG_NOZZLE                          "Nozzle 1"
+#define MSG_NOZZLE1                         "Nozzle 2"
+#define MSG_NOZZLE2                         "Nozzle 3"
 #define MSG_BED                             "Bed"
 #define MSG_FAN_SPEED                       "Fan speed"
 #define MSG_FLOW                            "Flow"
@@ -129,6 +138,24 @@
 #define MSG_BABYSTEP_Y                      "Babystep Y"
 #define MSG_BABYSTEP_Z                      "Babystep Z"
 #define MSG_ENDSTOP_ABORT                   "Endstop abort"
+
+#define MSG_LOAD_FILAMENT 					"Load filament"
+#define MSG_UNLOAD_FILAMENT 				"Unload filament"
+#define MSG_LOAD_ABS_EX1 					"Load ABS right"
+#define MSG_UNLOAD_ABS_EX1 					"Unload ABS right"
+#define MSG_LOAD_ABS_EX2 					"Load ABS left"
+#define MSG_UNLOAD_ABS_EX2 					"Unload ABS left"
+#define MSG_LOAD_PLA_EX1 					"Load PLA right"
+#define MSG_UNLOAD_PLA_EX1 					"Unload PLA right"
+#define MSG_LOAD_PLA_EX2 					"Load PLA left"
+#define MSG_UNLOAD_PLA_EX2 					"Unload PLA left"
+#define MSG_EXTRUDER_1 						"Right (EXT.1)"
+#define MSG_EXTRUDER_2 						"Left (EXT.2)"
+#define MSG_LOAD_TEXT0 						"  Insert filament"
+#define MSG_LOAD_TEXT1 						"until 1.5cm filament"
+#define MSG_LOAD_TEXT2 						"  visible in tube."
+#define MSG_LOAD_TEXT3 						" Then press button."
+#define MSG_FIRMWARE 						"Firmware version"
 
 #define MSG_RECTRACT                        "Rectract"
 
