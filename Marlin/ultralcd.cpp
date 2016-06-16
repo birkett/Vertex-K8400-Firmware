@@ -1494,10 +1494,10 @@ void lcd_firmwarescreen()
 void lcd_firmware_menu()
 {
   START_MENU();
-  MENU_ITEM(function, MSG_SPLASH_NAME_SMALL, lcd_return_to_status);
-  MENU_ITEM(function, MSG_SPLASH_FIRMWARE_SMALL, lcd_return_to_status);
-  MENU_ITEM(function, MSG_SPLASH_WEBSITE1_SMALL, lcd_return_to_status);
-  MENU_ITEM(function, MSG_SPLASH_WEBSITE2_SMALL, lcd_return_to_status);
+  MENU_ITEM(function, MSG_SPLASH_NAME, lcd_return_to_status);
+  MENU_ITEM(function, MSG_SPLASH_FIRMWARE, lcd_return_to_status);
+  MENU_ITEM(function, MSG_SPLASH_WEBSITE1, lcd_return_to_status);
+  MENU_ITEM(function, MSG_SPLASH_WEBSITE2, lcd_return_to_status);
   END_MENU();
 }
 #endif

@@ -8,29 +8,16 @@
 #ifndef LANGUAGE_EN_H
 #define LANGUAGE_EN_H
 
-// LCD Splashscreen Messages
-// Please note these can be 20 characters!
-#ifdef VELLEMAN_STARTUP_SPLASH
-  #define MSG_SPLASH_NAME                   " VERTEX  3D PRINTER"
+// Short strings for the boot splash and firmware info menu (Velleman addition)
+#ifdef VELLEMAN_ADDITIONAL_MENUS || VELLEMAN_STARTUP_SPLASH
+  #define MSG_SPLASH_NAME                   "VERTEX 3D PRINTER"
   #if EXTRUDERS == 2
-    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.4  HEADS:2"
+    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.4 HDS:2"
   #else
-    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.4  HEADS:1"
+    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.4 HDS:1"
   #endif
-  #define MSG_SPLASH_WEBSITE1               " vertex3dprinter.eu"
-  #define MSG_SPLASH_WEBSITE2               "    velleman.eu"
-#endif
-
-// Short strings for the firmware info menu (Velleman addition)
-#ifdef VELLEMAN_ADDITIONAL_MENUS
-  #define MSG_SPLASH_NAME_SMALL             "VERTEX 3D PRINTER"
-  #if EXTRUDERS == 2
-    #define MSG_SPLASH_FIRMWARE_SMALL       "M:1.0 V:1.4 HDS:2"
-  #else
-    #define MSG_SPLASH_FIRMWARE_SMALL       "M:1.0 V:1.4 HDS:1"
-  #endif
-  #define MSG_SPLASH_WEBSITE1_SMALL         "     K8400.eu"
-  #define MSG_SPLASH_WEBSITE2_SMALL         "   velleman.eu"
+  #define MSG_SPLASH_WEBSITE1               "    k8400.eu"
+  #define MSG_SPLASH_WEBSITE2               "   velleman.eu"
 #endif
 
 #define WELCOME_MSG                         MACHINE_NAME " is ready."
@@ -81,7 +68,7 @@
 #define MSG_FLOW0                           "Flow 0"
 #define MSG_FLOW1                           "Flow 1"
 #define MSG_FLOW2                           "Flow 2"
-#define MSG_CONTROL                         "Control"
+#define MSG_CONTROL                         "Settings"
 #define MSG_MIN                             " \002 Min"
 #define MSG_MAX                             " \002 Max"
 #define MSG_FACTOR                          " \002 Fact"
@@ -121,16 +108,16 @@
 #define MSG_LOAD_EPROM                      "Load memory"
 #define MSG_RESTORE_FAILSAFE                "Restore failsafe"
 #define MSG_REFRESH                         "Refresh"
-#define MSG_WATCH                           "Info screen"
-#define MSG_PREPARE                         "Prepare"
-#define MSG_TUNE                            "Tune"
-#define MSG_PAUSE_PRINT                     "Pause print"
-#define MSG_RESUME_PRINT                    "Resume print"
-#define MSG_STOP_PRINT                      "Stop print"
+#define MSG_WATCH                           "Status screen"
+#define MSG_PREPARE                         "Control printer"
+#define MSG_TUNE                            "Tune print job"
+#define MSG_PAUSE_PRINT                     "Pause print job"
+#define MSG_RESUME_PRINT                    "Resume print job"
+#define MSG_STOP_PRINT                      "Stop print job"
 #define MSG_CARD_MENU                       "Print from SD"
 #define MSG_NO_CARD                         "No SD card"
-#define MSG_DWELL                           "Sleep..."
-#define MSG_USERWAIT                        "Wait for user..."
+#define MSG_DWELL                           "Waiting..."
+#define MSG_USERWAIT                        "Waiting for user"
 #define MSG_RESUMING                        "Resuming print"
 #define MSG_PRINT_ABORTED                   "Print aborted"
 #define MSG_NO_MOVE                         "No move."
