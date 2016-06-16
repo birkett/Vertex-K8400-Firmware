@@ -199,8 +199,6 @@
 //===========================================================================
 //=============================public variables=============================
 //===========================================================================
-
-
 #ifdef SDSUPPORT
 CardReader card;
 #endif
@@ -3495,6 +3493,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
     } 
     break; 
     #endif
+    
 
 
 #ifdef VELLEMAN_LED_CONTROL_M420   

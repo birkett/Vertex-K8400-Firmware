@@ -1,4 +1,3 @@
-//ULTRALCD.CPP
 #include "temperature.h"
 #include "ultralcd.h"
 #ifdef ULTRA_LCD
@@ -512,9 +511,9 @@ static void lcd_tune_menu()
 #if TEMP_SENSOR_1 != 0
     MENU_ITEM_EDIT(int3, MSG_NOZZLE1, &target_temperature[1], 0, HEATER_1_MAXTEMP - 15);
 #endif
-//#if TEMP_SENSOR_2 != 0
-//    MENU_ITEM_EDIT(int3, MSG_NOZZLE2, &target_temperature[2], 0, HEATER_2_MAXTEMP - 15);
-//#endif
+#if TEMP_SENSOR_2 != 0
+    MENU_ITEM_EDIT(int3, MSG_NOZZLE2, &target_temperature[2], 0, HEATER_2_MAXTEMP - 15);
+#endif
 #if TEMP_SENSOR_BED != 0
     MENU_ITEM_EDIT(int3, MSG_BED, &target_temperature_bed, 0, BED_MAXTEMP - 15);
 #endif
@@ -524,9 +523,9 @@ static void lcd_tune_menu()
 #if TEMP_SENSOR_1 != 0
     MENU_ITEM_EDIT(int3, MSG_FLOW1, &extruder_multiply[1], 10, 999);
 #endif
-//#if TEMP_SENSOR_2 != 0
-//    MENU_ITEM_EDIT(int3, MSG_FLOW2, &extruder_multiply[2], 10, 999);
-//#endif
+#if TEMP_SENSOR_2 != 0
+    MENU_ITEM_EDIT(int3, MSG_FLOW2, &extruder_multiply[2], 10, 999);
+#endif
 
 #ifdef BABYSTEPPING
     #ifdef BABYSTEP_XY
@@ -559,7 +558,7 @@ void lcd_preheat_abs0()
     setWatch(); // heater sanity check timer
 }
 
-#if TEMP_SENSOR_1 >= 0 //2nd extruder preheat
+#if TEMP_SENSOR_1 != 0 //2nd extruder preheat
 void lcd_preheat_pla1()
 {
     setTargetHotend1(plaPreheatHotendTemp);
@@ -579,7 +578,7 @@ void lcd_preheat_abs1()
 }
 #endif //2nd extruder preheat
 
-#if TEMP_SENSOR_2 >= 0 //3 extruder preheat
+#if TEMP_SENSOR_2 != 0 //3 extruder preheat
 void lcd_preheat_pla2()
 {
     setTargetHotend2(plaPreheatHotendTemp);
@@ -599,7 +598,7 @@ void lcd_preheat_abs2()
 }
 #endif //3 extruder preheat
 
-#if TEMP_SENSOR_1 >= 0 || TEMP_SENSOR_2 != 0 //more than one extruder present
+#if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 //more than one extruder present
 void lcd_preheat_pla012()
 {
     setTargetHotend0(plaPreheatHotendTemp);
@@ -693,6 +692,12 @@ static void lcd_prepare_menu()
 {
     START_MENU();
     MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
+#ifdef SDSUPPORT
+    #ifdef MENU_ADDAUTOSTART
+      MENU_ITEM(function, MSG_AUTOSTART, lcd_autostart_sd);
+    #endif
+#endif
+    MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
     MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
 #ifdef LEDCONTROL		
     MENU_ITEM(submenu, MSG_LED_MENU, lcd_led_menu);		
@@ -714,13 +719,7 @@ static void lcd_prepare_menu()
     MENU_ITEM(function, MSG_PREHEAT_ABS, lcd_preheat_abs0);
   #endif
 #endif
-MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
-#ifdef SDSUPPORT
-    #ifdef MENU_ADDAUTOSTART
-      MENU_ITEM(function, MSG_AUTOSTART, lcd_autostart_sd);
-    #endif
-#endif
-    MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
+
     //MENU_ITEM(gcode, MSG_SET_ORIGIN, PSTR("G92 X0 Y0 Z0"));
     MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);
 #if PS_ON_PIN > -1
@@ -731,6 +730,7 @@ MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
         MENU_ITEM(gcode, MSG_SWITCH_PS_ON, PSTR("M80"));
     }
 #endif
+    MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
     END_MENU();
 }
 
@@ -804,7 +804,6 @@ static void lcd_move_menu_axis()
     {
         MENU_ITEM(submenu, MSG_MOVE_Z, lcd_move_z);
         MENU_ITEM(submenu, MSG_MOVE_E, lcd_move_e);
-        //MENU_ITEM(submenu, MSG_MOVE_E1, lcd_move_e1);
     }
     END_MENU();
 }
@@ -827,7 +826,7 @@ static void lcd_move_menu_01mm()
 
 static void lcd_move_menu()
 {
-    START_MENU();  
+    START_MENU();
     MENU_ITEM(back, MSG_PREPARE, lcd_prepare_menu);
     MENU_ITEM(submenu, MSG_MOVE_10MM, lcd_move_menu_10mm);
     MENU_ITEM(submenu, MSG_MOVE_1MM, lcd_move_menu_1mm);

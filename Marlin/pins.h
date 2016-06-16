@@ -554,14 +554,14 @@
     #define X_STEP_PIN         54
     #define X_DIR_PIN          55
     #define X_ENABLE_PIN       38
-    #define X_MIN_PIN           -1
-    #define X_MAX_PIN           3   
+    #define X_MIN_PIN          -1
+    #define X_MAX_PIN           3   //2 //Max endstops default to disabled "-1", set to commented value to enable.
 
     #define Y_STEP_PIN         60
     #define Y_DIR_PIN          61
     #define Y_ENABLE_PIN       56
     #define Y_MIN_PIN          -1
-    #define Y_MAX_PIN          14
+    #define Y_MAX_PIN          14   //15
 
     #define Z_STEP_PIN         46
     #define Z_DIR_PIN          48
@@ -615,15 +615,15 @@
     #define Y2_DIR_PIN         34
     #define Y2_ENABLE_PIN      30
 
-    #define Z2_STEP_PIN        -1
-    #define Z2_DIR_PIN         -1
-    #define Z2_ENABLE_PIN      -1
+    #define Z2_STEP_PIN        36
+    #define Z2_DIR_PIN         34
+    #define Z2_ENABLE_PIN      30
 
     #define E0_STEP_PIN        26
     #define E0_DIR_PIN         28
     #define E0_ENABLE_PIN      24
 
-    #define E1_STEP_PIN        32
+    #define E1_STEP_PIN        36
     #define E1_DIR_PIN         34
     #define E1_ENABLE_PIN      30
 
@@ -661,7 +661,6 @@
     #define FAN_PIN            11 // Last Heater Pin on board
   #else
     #define FAN_PIN            4 // IO pin. Buffer needed
-    #define FAN1_PIN           2
   #endif
 
   #if MB(3DRAG) || MB(RAMPS_13_EEF)
@@ -690,7 +689,7 @@
   #if MB(RAMPS_13_EFB) || MB(AZTEEG_X3)
     #define HEATER_1_PIN       -1
   #else
-    #define HEATER_1_PIN       11    // EXTRUDER 2 (FAN On Sprinter)
+    #define HEATER_1_PIN       9    // EXTRUDER 2 (FAN On Sprinter)
   #endif
 
 
@@ -873,9 +872,9 @@
 #define Z_MIN_PIN          18
 #define Z_MAX_PIN          -1    //19
 
-    #define E0_STEP_PIN        26
-    #define E0_DIR_PIN         28
-    #define E0_ENABLE_PIN      24
+#define E0_STEP_PIN        26
+#define E0_DIR_PIN         28
+#define E0_ENABLE_PIN      24
 
 #define E1_STEP_PIN        32
 #define E1_DIR_PIN         34
@@ -1686,9 +1685,9 @@
 #else
  #define HEATER_2_PIN        6    // EXTRUDER 3
  #if (TEMP_SENSOR_2==-1)
-  #define TEMP_2_PIN         -1    // ANALOG NUMBERING - connector *K3* on RUMBA thermocouple ADD ON is used <-- this can not be used when TEMP_SENSOR_BED is defined as thermocouple
+  #define TEMP_2_PIN         7    // ANALOG NUMBERING - connector *K3* on RUMBA thermocouple ADD ON is used <-- this can not be used when TEMP_SENSOR_BED is defined as thermocouple
  #else
-  #define TEMP_2_PIN         -1   // ANALOG NUMBERING - default connector for thermistor *T2* on rumba board is used
+  #define TEMP_2_PIN         13   // ANALOG NUMBERING - default connector for thermistor *T2* on rumba board is used
  #endif
 #endif
 
