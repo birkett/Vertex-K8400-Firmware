@@ -46,6 +46,9 @@
   #define MACHINE_NAME "Rumba"
   #define FIRMWARE_URL "https://github.com/MarlinFirmware/Marlin"
 #elif MB(3DRAG)
+  #define MACHINE_NAME "3Drag"
+  #define FIRMWARE_URL "http://3dprint.elettronicain.it/"
+#elif MB(3DRAG) && VELLEMAN_STRINGS //3DRAG with Velleman customisations
   #define MACHINE_NAME "Vertex"
   #define FIRMWARE_URL "http://www.vertex3dprinter.eu/"
 #elif MB(5DPRINT)

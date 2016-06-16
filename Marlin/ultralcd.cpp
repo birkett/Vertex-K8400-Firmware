@@ -55,8 +55,10 @@ static void lcd_main_menu();
 static void lcd_tune_menu();
 static void lcd_prepare_menu();
 static void lcd_move_menu();
+#ifdef VELLEMAN_ADDITIONAL_MENUS
 static void lcd_load_menu();
 static void lcd_unload_menu();
+#endif
 static void lcd_control_menu();
 static void lcd_led_menu();
 static void lcd_control_temperature_menu();
@@ -69,7 +71,9 @@ static void lcd_set_contrast();
 #endif
 static void lcd_control_retract_menu();
 static void lcd_sdcard_menu();
+#ifdef VELLEMAN_ADDITIONAL_MENUS
 static void lcd_firmware_menu();
+#endif
 
 #ifdef DELTA_CALIBRATION_MENU
 static void lcd_delta_calibrate_menu();
@@ -337,6 +341,7 @@ static void lcd_sdcard_stop()
 }
 
 /* Menu implementation */
+#ifdef VELLEMAN_LED_CONTROL
 static void lcd_set_led_white()		
 {		
    digitalWrite(REDPIN, 1);		
@@ -399,6 +404,7 @@ static void lcd_led_menu()
     MENU_ITEM(function, MSG_LED_OFF, lcd_set_led_off);		
   END_MENU();		
 }
+#endif
 
 static void lcd_main_menu()
 {
@@ -437,12 +443,14 @@ static void lcd_main_menu()
 #endif
     }
 #endif
-    
+
+#ifdef VELLEMAN_ADDITIONAL_MENUS
     if (movesplanned() || IS_SD_PRINTING)
     {    }
     else{
         MENU_ITEM(submenu, MSG_FIRMWARE, lcd_firmware_menu);
     }
+#endif
     
     END_MENU();
 }
@@ -494,7 +502,7 @@ static void lcd_tune_menu()
 {
     START_MENU();
     MENU_ITEM(back, MSG_MAIN, lcd_main_menu);
-#ifdef LEDCONTROL		
+#ifdef VELLEMAN_LED_CONTROL		
     MENU_ITEM(submenu, MSG_LED_MENU, lcd_led_menu);		
 #endif
     MENU_ITEM_EDIT(int3, MSG_SPEED, &feedmultiply, 10, 999);
@@ -692,8 +700,10 @@ static void lcd_prepare_menu()
     MENU_ITEM(function, MSG_SET_HOME_OFFSETS, lcd_set_home_offsets);
     //MENU_ITEM(gcode, MSG_SET_ORIGIN, PSTR("G92 X0 Y0 Z0"));
 
+#ifdef VELLEMAN_ADDITIONAL_MENUS
     MENU_ITEM(submenu, MSG_LOAD_FILAMENT, lcd_load_menu);
     MENU_ITEM(submenu, MSG_UNLOAD_FILAMENT, lcd_unload_menu);
+#endif
 
 #if TEMP_SENSOR_0 != 0
   #if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 || TEMP_SENSOR_BED != 0
@@ -826,6 +836,7 @@ static void lcd_move_menu()
     END_MENU();
 }
 
+#ifdef VELLEMAN_ADDITIONAL_MENUS
 static void load_extruder_start(short extruder)
 {
   enquecommand_P(PSTR("M117 Preparing..."));
@@ -1075,6 +1086,7 @@ static void lcd_unload_menu()
 #endif
     END_MENU();
 }
+#endif //VELLEMAN_ADDITIONAL_MENUS
 
 static void lcd_control_menu()
 {
@@ -1458,6 +1470,7 @@ static void menu_action_setting_edit_callback_bool(const char* pstr, bool* ptr, 
 }
 #endif//ULTIPANEL
 
+#ifdef VELLEMAN_STARTUP_SPLASH
 char *logosplash[] = {
   "\xff\x20\xff\x20\x20\xff\xff\xff\x20\x20\xff\xff\xff\x20\x20\xff\xff\xff\x20\x20\xff\xff\xff\x20\x20\xff\x20\xff\x20\x20",
   "\xff\x20\xff\x20\x20\xff\xff\x20\x20\x20\xff\xff\xff\x20\x20\x20\xff\x20\x20\x20\xff\xff\x20\x20\x20\x20\xff\x20\x20\x20",
@@ -1478,6 +1491,7 @@ void lcd_firmwarescreen()
   lcd.print(MSG_SPLASH_WEBSITE2);
 }
 
+#ifdef VELLEMAN_ADDITIONAL_MENUS
 void lcd_firmware_menu()
 {
   START_MENU();
@@ -1487,6 +1501,7 @@ void lcd_firmware_menu()
   MENU_ITEM(function, MSG_SPLASH_WEBSITE2_SMALL, lcd_return_to_status);
   END_MENU();
 }
+#endif
 
 void lcd_splashscreen()
 { 
@@ -1500,7 +1515,7 @@ void lcd_splashscreen()
   WRITE(BTN_EN2,HIGH);
   WRITE(BTN_ENC,HIGH);
 
-#ifdef LEDCONTROL		
+#ifdef VELLEMAN_LED_CONTROL		
   pinMode(REDPIN, OUTPUT);		
   pinMode(GREENPIN, OUTPUT);		
   pinMode(BLUEPIN, OUTPUT);		
@@ -1563,6 +1578,7 @@ void lcd_splashscreen()
   _delay_ms(100);
   
 }
+#endif //VELLEMAN_STARTUP_SPLASH
 
 /** LCD API **/
 void lcd_init()

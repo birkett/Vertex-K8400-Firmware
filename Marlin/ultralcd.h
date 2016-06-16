@@ -6,7 +6,9 @@
 #ifdef ULTRA_LCD
 
   void lcd_update();
+#ifdef VELLEMAN_STARTUP_SPLASH
   void lcd_splashscreen();
+#endif
   void lcd_init();
   void lcd_setstatus(const char* message);
   void lcd_setstatuspgm(const char* message);
@@ -97,7 +99,9 @@
 
 #else //no LCD
   FORCE_INLINE void lcd_update() {}
+#ifdef VELLEMAN_STARTUP_SPLASH
   FORCE_INLINE void lcd_splashscreen() {}
+#endif
   FORCE_INLINE void lcd_init() {}
   FORCE_INLINE void lcd_setstatus(const char* message) {}
   FORCE_INLINE void lcd_buttons_update() {}

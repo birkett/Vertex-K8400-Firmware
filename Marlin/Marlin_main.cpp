@@ -558,7 +558,7 @@ void servo_init()
 
 void setup()
 {
-  #ifdef LEDCONTROL		
+  #ifdef VELLEMAN_LED_CONTROL		
     pinMode(REDPIN, OUTPUT);		
     pinMode(GREENPIN, OUTPUT);		
     pinMode(BLUEPIN, OUTPUT);		
@@ -616,9 +616,13 @@ void setup()
   setup_photpin();
   servo_init();
   
-
-  lcd_splashscreen();
+#ifdef VELLEMAN_STARTUP_SPLASH
+  lcd_splashscreen(); // Velleman boot splash screen bitmap
+#endif
   lcd_init();
+#ifndef VELLEMAN_STARTUP_SPLASH // Only do this without the Velleman boot splash
+  _delay_ms(1000);	// wait 1sec to display the splash screen
+#endif
 
   #if defined(CONTROLLERFAN_PIN) && CONTROLLERFAN_PIN > -1
     SET_OUTPUT(CONTROLLERFAN_PIN); //Set pin used for driver cooling fan
@@ -3493,7 +3497,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
     #endif
 
 
-#ifdef LEDCONTROL    
+#ifdef VELLEMAN_LED_CONTROL_M420   
     case 420: //M420 - Rxxx Exxx Bxxx 		
     {
         if (code_seen('R')) digitalWrite(REDPIN, code_value() != 0 ? 1 : 0);

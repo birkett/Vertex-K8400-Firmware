@@ -55,6 +55,15 @@
   #define MOTHERBOARD BOARD_3DRAG
 #endif
 
+// Velleman customisations for 3DRAG
+#if MB(3DRAG)
+  #define VELLEMAN_STRINGS				// Enable the customised Velleman name strings
+  #define VELLEMAN_LED_CONTROL			// Enable the RGB LED control code
+  #define VELLEMAN_LED_CONTROL_M420		// Enable RGB LED control via M420 GCode
+  #define VELLEMAN_STARTUP_SPLASH		// Enable the Velleman boot splash screen
+  #define VELLEMAN_ADDITIONAL_MENUS		// Enable additional menus from Velleman (load / unload filament)
+#endif
+
 // Define this to set a custom name for your generic Mendel,
 // #define CUSTOM_MENDEL_NAME "This Mendel"
 
@@ -723,18 +732,16 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // Otherwise the RED led is on. There is 1C hysteresis.
 //#define TEMP_STAT_LEDS
 
-// If you want to connect and control an RGB strip from the menu uncomment this.		
-#define LEDCONTROL		
-#ifdef LEDCONTROL		
- // Declare pin numbers for the RGB channels.		
-# define REDPIN 41		
-# define GREENPIN 40		
-# define BLUEPIN 12
-		
- // Declare STARTVALUES for the RGB channels NOTE: for VELLEMAN motherboard only 0 or 1 is possible.		
-# define REDSTARTVAL 1		
-# define GREENSTARTVAL 1		
-# define BLUESTARTVAL 1		
+#ifdef VELLEMAN_LED_CONTROL
+  // Declare pin numbers for the RGB channels.
+  #define REDPIN 41
+  #define GREENPIN 40
+  #define BLUEPIN 12
+
+  // Declare STARTVALUES for the RGB channels NOTE: for VELLEMAN motherboard only 0 or 1 is possible.
+  #define REDSTARTVAL 1
+  #define GREENSTARTVAL 1
+  #define BLUESTARTVAL 1
 #endif
 
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency

@@ -10,24 +10,28 @@
 
 // LCD Splashscreen Messages
 // Please note these can be 20 characters!
-
-#define MSG_SPLASH_NAME     				" VERTEX  3D PRINTER"
-#if EXTRUDERS == 2
-  #define MSG_SPLASH_FIRMWARE 				"M:1.0 V:1.4  HEADS:2"
-#else
-  #define MSG_SPLASH_FIRMWARE 				"M:1.0 V:1.4  HEADS:1"
+#ifdef VELLEMAN_STARTUP_SPLASH
+  #define MSG_SPLASH_NAME                   " VERTEX  3D PRINTER"
+  #if EXTRUDERS == 2
+    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.4  HEADS:2"
+  #else
+    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.4  HEADS:1"
+  #endif
+  #define MSG_SPLASH_WEBSITE1               " vertex3dprinter.eu"
+  #define MSG_SPLASH_WEBSITE2               "    velleman.eu"
 #endif
-#define MSG_SPLASH_WEBSITE1 				" vertex3dprinter.eu"
-#define MSG_SPLASH_WEBSITE2 				"    velleman.eu"
 
-#define MSG_SPLASH_NAME_SMALL 				"VERTEX 3D PRINTER"
-#if EXTRUDERS == 2
-  #define MSG_SPLASH_FIRMWARE_SMALL 		"M:1.0 V:1.4 HDS:2"
-#else
-  #define MSG_SPLASH_FIRMWARE_SMALL 		"M:1.0 V:1.4 HDS:1"
+// Short strings for the firmware info menu (Velleman addition)
+#ifdef VELLEMAN_ADDITIONAL_MENUS
+  #define MSG_SPLASH_NAME_SMALL             "VERTEX 3D PRINTER"
+  #if EXTRUDERS == 2
+    #define MSG_SPLASH_FIRMWARE_SMALL       "M:1.0 V:1.4 HDS:2"
+  #else
+    #define MSG_SPLASH_FIRMWARE_SMALL       "M:1.0 V:1.4 HDS:1"
+  #endif
+  #define MSG_SPLASH_WEBSITE1_SMALL         "     K8400.eu"
+  #define MSG_SPLASH_WEBSITE2_SMALL         "   velleman.eu"
 #endif
-#define MSG_SPLASH_WEBSITE1_SMALL 			"     K8400.eu"
-#define MSG_SPLASH_WEBSITE2_SMALL 			"   velleman.eu"
 
 #define WELCOME_MSG                         MACHINE_NAME " is ready."
 #define MSG_SD_INSERTED                     "Card inserted"
@@ -108,7 +112,7 @@
 #define MSG_TEMPERATURE                     "Temperature"
 #define MSG_MOTION                          "Motion"
 #define MSG_VOLUMETRIC                      "Filament"
-#define MSG_VOLUMETRIC_ENABLED		        "E in mm3"
+#define MSG_VOLUMETRIC_ENABLED              "E in mm3"
 #define MSG_FILAMENT_SIZE_EXTRUDER_0        "Fil. Dia. 1"
 #define MSG_FILAMENT_SIZE_EXTRUDER_1        "Fil. Dia. 2"
 #define MSG_FILAMENT_SIZE_EXTRUDER_2        "Fil. Dia. 3"
@@ -151,32 +155,37 @@
 #define MSG_BABYSTEP_Z                      "Babystep Z"
 #define MSG_ENDSTOP_ABORT                   "Endstop abort"
 
-#define MSG_LOAD_FILAMENT 					"Load filament"
-#define MSG_UNLOAD_FILAMENT 				"Unload filament"
-#define MSG_LOAD_ABS_EX1 					"Load ABS right"
-#define MSG_UNLOAD_ABS_EX1 					"Unload ABS right"
-#define MSG_LOAD_ABS_EX2 					"Load ABS left"
-#define MSG_UNLOAD_ABS_EX2 					"Unload ABS left"
-#define MSG_LOAD_PLA_EX1 					"Load PLA right"
-#define MSG_UNLOAD_PLA_EX1 					"Unload PLA right"
-#define MSG_LOAD_PLA_EX2 					"Load PLA left"
-#define MSG_UNLOAD_PLA_EX2 					"Unload PLA left"
-#define MSG_EXTRUDER_1 						"Right (EXT.1)"
-#define MSG_EXTRUDER_2 						"Left (EXT.2)"
-#define MSG_LOAD_TEXT0 						" Insert filament"
-#define MSG_LOAD_TEXT1 						" until 1.5cm is"
-#define MSG_LOAD_TEXT2 						" visible in tube"
-#define MSG_LOAD_TEXT3 						"Then press button"
-#define MSG_FIRMWARE 						"Firmware version"
-#define MSG_LED_MENU 						"Set LED color"		
-#define MSG_LED_BLUE 						"Blue"		
-#define MSG_LED_LIGHTBLUE 					"Lightblue"		
-#define MSG_LED_PURPLE 						"Purple"		
-#define MSG_LED_RED 						"Red"		
-#define MSG_LED_GREEN 						"Green"		
-#define MSG_LED_YELLOW 						"Yellow"		
-#define MSG_LED_WHITE 						"White"		
-#define MSG_LED_OFF 						"Off"
+#ifdef VELLEMAN_ADDITIONAL_MENUS
+  #define MSG_LOAD_FILAMENT                 "Load filament"
+  #define MSG_UNLOAD_FILAMENT               "Unload filament"
+  #define MSG_LOAD_ABS_EX1                  "Load ABS right"
+  #define MSG_UNLOAD_ABS_EX1                "Unload ABS right"
+  #define MSG_LOAD_ABS_EX2                  "Load ABS left"
+  #define MSG_UNLOAD_ABS_EX2                "Unload ABS left"
+  #define MSG_LOAD_PLA_EX1                  "Load PLA right"
+  #define MSG_UNLOAD_PLA_EX1                "Unload PLA right"
+  #define MSG_LOAD_PLA_EX2                  "Load PLA left"
+  #define MSG_UNLOAD_PLA_EX2                "Unload PLA left"
+  #define MSG_EXTRUDER_1                    "Right (EXT.1)"
+  #define MSG_EXTRUDER_2                    "Left (EXT.2)"
+  #define MSG_LOAD_TEXT0                    " Insert filament"
+  #define MSG_LOAD_TEXT1                    " until 1.5cm is"
+  #define MSG_LOAD_TEXT2                    " visible in tube"
+  #define MSG_LOAD_TEXT3                    "Then press button"
+  #define MSG_FIRMWARE                      "Firmware version"
+#endif
+
+#ifdef VELLEMAN_LED_CONTROL
+  #define MSG_LED_MENU                      "Set LED color"     
+  #define MSG_LED_BLUE                      "Blue"      
+  #define MSG_LED_LIGHTBLUE                 "Lightblue"     
+  #define MSG_LED_PURPLE                    "Purple"        
+  #define MSG_LED_RED                       "Red"       
+  #define MSG_LED_GREEN                     "Green"     
+  #define MSG_LED_YELLOW                    "Yellow"        
+  #define MSG_LED_WHITE                     "White"     
+  #define MSG_LED_OFF                       "Off"
+#endif
 
 #define MSG_RECTRACT                        "Rectract"
 
