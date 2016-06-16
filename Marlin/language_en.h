@@ -12,9 +12,9 @@
 #ifdef VELLEMAN_ADDITIONAL_MENUS || VELLEMAN_STARTUP_SPLASH
   #define MSG_SPLASH_NAME                   "VERTEX 3D PRINTER"
   #if EXTRUDERS == 2
-    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.4 HDS:2"
+    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.5 HDS:2"
   #else
-    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.4 HDS:1"
+    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.5 HDS:1"
   #endif
   #define MSG_SPLASH_WEBSITE1               "    k8400.eu"
   #define MSG_SPLASH_WEBSITE2               "   velleman.eu"
