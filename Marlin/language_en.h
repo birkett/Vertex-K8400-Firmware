@@ -8,22 +8,10 @@
 #ifndef LANGUAGE_EN_H
 #define LANGUAGE_EN_H
 
-// Short strings for the boot splash and firmware info menu (Velleman addition)
-#ifdef VELLEMAN_ADDITIONAL_MENUS || VELLEMAN_STARTUP_SPLASH
-  #define MSG_SPLASH_NAME                   "VERTEX 3D PRINTER"
-  #if EXTRUDERS == 2
-    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.5 HDS:2"
-  #else
-    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.5 HDS:1"
-  #endif
-  #define MSG_SPLASH_WEBSITE1               "    k8400.eu"
-  #define MSG_SPLASH_WEBSITE2               "   velleman.eu"
-#endif
-
-#define WELCOME_MSG                         MACHINE_NAME " is ready."
+#define WELCOME_MSG                         MACHINE_NAME " ready."
 #define MSG_SD_INSERTED                     "Card inserted"
 #define MSG_SD_REMOVED                      "Card removed"
-#define MSG_MAIN                            "Main menu"
+#define MSG_MAIN                            "Main"
 #define MSG_AUTOSTART                       "Autostart"
 #define MSG_DISABLE_STEPPERS                "Disable steppers"
 #define MSG_AUTO_HOME                       "Auto home"
@@ -52,23 +40,23 @@
 #define MSG_MOVE_X                          "Move X"
 #define MSG_MOVE_Y                          "Move Y"
 #define MSG_MOVE_Z                          "Move Z"
-#define MSG_MOVE_E                          "Extruder 1"
-#define MSG_MOVE_E1                         "Extruder 2"
-#define MSG_MOVE_E2                         "Extruder 3"
+#define MSG_MOVE_E                          "Extruder"
+#define MSG_MOVE_E1                         "Extruder2"
+#define MSG_MOVE_E2                         "Extruder3"
 #define MSG_MOVE_01MM                       "Move 0.1mm"
 #define MSG_MOVE_1MM                        "Move 1mm"
 #define MSG_MOVE_10MM                       "Move 10mm"
 #define MSG_SPEED                           "Speed"
-#define MSG_NOZZLE                          "Nozzle 1"
-#define MSG_NOZZLE1                         "Nozzle 2"
-#define MSG_NOZZLE2                         "Nozzle 3"
+#define MSG_NOZZLE                          "Nozzle"
+#define MSG_NOZZLE1                         "Nozzle2"
+#define MSG_NOZZLE2                         "Nozzle3"
 #define MSG_BED                             "Bed"
 #define MSG_FAN_SPEED                       "Fan speed"
 #define MSG_FLOW                            "Flow"
 #define MSG_FLOW0                           "Flow 0"
 #define MSG_FLOW1                           "Flow 1"
 #define MSG_FLOW2                           "Flow 2"
-#define MSG_CONTROL                         "Settings"
+#define MSG_CONTROL                         "Control"
 #define MSG_MIN                             " \002 Min"
 #define MSG_MAX                             " \002 Max"
 #define MSG_FACTOR                          " \002 Fact"
@@ -108,16 +96,16 @@
 #define MSG_LOAD_EPROM                      "Load memory"
 #define MSG_RESTORE_FAILSAFE                "Restore failsafe"
 #define MSG_REFRESH                         "Refresh"
-#define MSG_WATCH                           "Status screen"
-#define MSG_PREPARE                         "Control printer"
-#define MSG_TUNE                            "Tune print job"
-#define MSG_PAUSE_PRINT                     "Pause print job"
-#define MSG_RESUME_PRINT                    "Resume print job"
-#define MSG_STOP_PRINT                      "Stop print job"
+#define MSG_WATCH                           "Info screen"
+#define MSG_PREPARE                         "Prepare"
+#define MSG_TUNE                            "Tune"
+#define MSG_PAUSE_PRINT                     "Pause print"
+#define MSG_RESUME_PRINT                    "Resume print"
+#define MSG_STOP_PRINT                      "Stop print"
 #define MSG_CARD_MENU                       "Print from SD"
 #define MSG_NO_CARD                         "No SD card"
-#define MSG_DWELL                           "Waiting..."
-#define MSG_USERWAIT                        "Waiting for user"
+#define MSG_DWELL                           "Sleep..."
+#define MSG_USERWAIT                        "Wait for user..."
 #define MSG_RESUMING                        "Resuming print"
 #define MSG_PRINT_ABORTED                   "Print aborted"
 #define MSG_NO_MOVE                         "No move."
@@ -142,6 +130,75 @@
 #define MSG_BABYSTEP_Z                      "Babystep Z"
 #define MSG_ENDSTOP_ABORT                   "Endstop abort"
 
+#define MSG_RECTRACT                        "Rectract"
+
+#ifdef DELTA_CALIBRATION_MENU
+    #define MSG_DELTA_CALIBRATE             "Delta Calibration"
+    #define MSG_DELTA_CALIBRATE_X           "Calibrate X"
+    #define MSG_DELTA_CALIBRATE_Y           "Calibrate Y"
+    #define MSG_DELTA_CALIBRATE_Z           "Calibrate Z"
+    #define MSG_DELTA_CALIBRATE_CENTER      "Calibrate Center"
+#endif // DELTA_CALIBRATION_MENU
+
+// Short strings for the boot splash and firmware info menu (Velleman addition)
+#ifdef VELLEMAN_ADDITIONAL_MENUS || VELLEMAN_STARTUP_SPLASH
+  #define MSG_SPLASH_NAME                   "VERTEX 3D PRINTER"
+  #if EXTRUDERS == 2
+    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.5 HDS:2"
+  #else
+    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.5 HDS:1"
+  #endif
+  #define MSG_SPLASH_WEBSITE1               "    k8400.eu"
+  #define MSG_SPLASH_WEBSITE2               "   velleman.eu"
+#endif
+
+// Strings customised by Velleman
+#ifdef VELLEMAN_STRINGS
+  #undef  WELCOME_MSG
+  #define WELCOME_MSG                       MACHINE_NAME " is ready."
+  #undef  MSG_MAIN
+  #define MSG_MAIN                          "Main menu"
+  #undef  MSG_DISABLE_STEPPERS
+  #define MSG_DISABLE_STEPPERS              "Disable motors"
+  #undef  MSG_MOVE_E
+  #define MSG_MOVE_E                        "Extruder 1"
+  #undef  MSG_MOVE_E1
+  #define MSG_MOVE_E1                       "Extruder 2"
+  #undef  MSG_MOVE_E2
+  #define MSG_MOVE_E2                       "Extruder 3"
+  #undef  MSG_NOZZLE
+  #define MSG_NOZZLE                        "Nozzle 1"
+  #undef  MSG_NOZZLE1
+  #define MSG_NOZZLE1                       "Nozzle 2"
+  #undef  MSG_NOZZLE2
+  #define MSG_NOZZLE2                       "Nozzle 3"
+  #undef  MSG_FLOW0
+  #define MSG_FLOW0                         "Flow 1"
+  #undef  MSG_FLOW1
+  #define MSG_FLOW1                         "Flow 2"
+  #undef  MSG_FLOW2
+  #define MSG_FLOW2                         "Flow 3"
+  #undef  MSG_CONTROL
+  #define MSG_CONTROL                       "Settings"
+  #undef  MSG_WATCH
+  #define MSG_WATCH                         "Status screen"
+  #undef  MSG_PREPARE
+  #define MSG_PREPARE                       "Control printer"
+  #undef  MSG_TUNE
+  #define MSG_TUNE                          "Tune print job"
+  #undef  MSG_PAUSE_PRINT
+  #define MSG_PAUSE_PRINT                   "Pause print job"
+  #undef  MSG_RESUME_PRINT
+  #define MSG_RESUME_PRINT                  "Resume print job"
+  #undef  MSG_STOP_PRINT
+  #define MSG_STOP_PRINT                    "Stop print job"
+  #undef  MSG_DWELL
+  #define MSG_DWELL                         "Waiting..."
+  #undef  MSG_USERWAIT
+  #define MSG_USERWAIT                      "Waiting for user"
+#endif
+
+// Velleman load / unload / firmware info menu strings
 #ifdef VELLEMAN_ADDITIONAL_MENUS
   #define MSG_LOAD_FILAMENT                 "Load filament"
   #define MSG_UNLOAD_FILAMENT               "Unload filament"
@@ -162,6 +219,7 @@
   #define MSG_FIRMWARE                      "Firmware version"
 #endif
 
+// Velleman LED control menu strings
 #ifdef VELLEMAN_LED_CONTROL
   #define MSG_LED_MENU                      "Set LED color"     
   #define MSG_LED_BLUE                      "Blue"      
@@ -173,15 +231,5 @@
   #define MSG_LED_WHITE                     "White"     
   #define MSG_LED_OFF                       "Off"
 #endif
-
-#define MSG_RECTRACT                        "Rectract"
-
-#ifdef DELTA_CALIBRATION_MENU
-    #define MSG_DELTA_CALIBRATE             "Delta Calibration"
-    #define MSG_DELTA_CALIBRATE_X           "Calibrate X"
-    #define MSG_DELTA_CALIBRATE_Y           "Calibrate Y"
-    #define MSG_DELTA_CALIBRATE_Z           "Calibrate Z"
-    #define MSG_DELTA_CALIBRATE_CENTER      "Calibrate Center"
-#endif // DELTA_CALIBRATION_MENU
 
 #endif // LANGUAGE_EN_H
