@@ -124,8 +124,7 @@
 #define TEMP_SENSOR_0 5
 #if EXTRUDERS == 1
   #define TEMP_SENSOR_1 0
-#endif
-#if EXTRUDERS == 2
+#elif EXTRUDERS == 2
   #define TEMP_SENSOR_1 5
 #endif
 #define TEMP_SENSOR_2 0

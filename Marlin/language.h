@@ -177,4 +177,10 @@
 
 #include LANGUAGE_INCLUDE
 
+#if defined(VELLEMAN_ADDITIONAL_MENUS) || defined(VELLEMAN_STARTUP_SPLASH) || defined(VELLEMAN_LED_CONTROL)
+  #ifndef LANGUAGE_EN_H
+    #error "Velleman customisations only supported for English language builds."
+  #endif
+#endif
+
 #endif //__LANGUAGE_H

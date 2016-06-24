@@ -142,12 +142,10 @@
 
 // Short strings for the boot splash and firmware info menu (Velleman addition)
 #ifdef VELLEMAN_ADDITIONAL_MENUS || VELLEMAN_STARTUP_SPLASH
+  #define STR(x) LANGUAGE_CONCAT(x)
+
   #define MSG_SPLASH_NAME                   "VERTEX 3D PRINTER"
-  #if EXTRUDERS == 2
-    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.5 HDS:2"
-  #else
-    #define MSG_SPLASH_FIRMWARE             "M:1.0 V:1.5 HDS:1"
-  #endif
+  #define MSG_SPLASH_FIRMWARE               "M:1.0 V:1.5 HDS:" STR(EXTRUDERS)
   #define MSG_SPLASH_WEBSITE1               "    k8400.eu"
   #define MSG_SPLASH_WEBSITE2               "   velleman.eu"
 #endif
