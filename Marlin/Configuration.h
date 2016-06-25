@@ -62,6 +62,7 @@
   #define VELLEMAN_LED_CONTROL_M420		// Enable RGB LED control via M420 GCode
   #define VELLEMAN_STARTUP_SPLASH		// Enable the Velleman boot splash screen
   #define VELLEMAN_ADDITIONAL_MENUS		// Enable additional menus from Velleman (load / unload filament)
+  #define VELLEMAN_EXTRUDER_RATE_FIX	// Enable the third party extruder rate fix
 #endif
 
 // Define this to set a custom name for your generic Mendel,
@@ -500,7 +501,11 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 // default settings
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {134.74,134.74,4266.66,200}  //
+#ifdef VELLEMAN_EXTRUDER_RATE_FIX
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   {134.74,134.74,4266.66,148.7}  //
+#else
+  #define DEFAULT_AXIS_STEPS_PER_UNIT   {134.74,134.74,4266.66,200}  //
+#endif
 #define DEFAULT_MAX_FEEDRATE          {160, 160, 10, 10000}    // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION      {9000,9000,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.8000
 

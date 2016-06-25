@@ -884,10 +884,20 @@ static void load_extruder_end(short extruder)
 {
   enquecommand_P(PSTR("G92 E0"));
   enquecommand_P(PSTR("M83"));
+#ifdef VELLEMAN_EXTRUDER_RATE_FIX
+  enquecommand_P(PSTR("G1 E200 F2000"));
+  enquecommand_P(PSTR("G1 E203 F2000"));
+  enquecommand_P(PSTR("G1 E269 F1000"));
+#else
   enquecommand_P(PSTR("G1 E300 F2000"));
   enquecommand_P(PSTR("G1 E200 F1000"));
+#endif
   enquecommand_P(PSTR("M117 Feeding filament"));
+#ifdef VELLEMAN_EXTRUDER_RATE_FIX
+  enquecommand_P(PSTR("G1 E90 F50"));
+#else
   enquecommand_P(PSTR("G1 E60 F50"));
+#endif
   enquecommand_P(PSTR("G28"));
   enquecommand_P(PSTR("G90"));
   enquecommand_P(PSTR("M82"));
@@ -906,10 +916,19 @@ static void unload_extruder_end(short extruder)
 {
   enquecommand_P(PSTR("G92 E0"));
   enquecommand_P(PSTR("M83"));
+#ifdef VELLEMAN_EXTRUDER_RATE_FIX
+  enquecommand_P(PSTR("G1 E15 F50"));
+#else
   enquecommand_P(PSTR("G1 E10 F50"));
+#endif
   enquecommand_P(PSTR("M117 Unloading filament"));
+#ifdef VELLEMAN_EXTRUDER_RATE_FIX
+  enquecommand_P(PSTR("G1 E-375 F2000"));
+  enquecommand_P(PSTR("G1 E-375 F2000"));
+#else
   enquecommand_P(PSTR("G1 E-300 F2000"));
   enquecommand_P(PSTR("G1 E-300 F2000"));
+#endif
   enquecommand_P(PSTR("G28"));
   enquecommand_P(PSTR("G90"));
   enquecommand_P(PSTR("M82"));
