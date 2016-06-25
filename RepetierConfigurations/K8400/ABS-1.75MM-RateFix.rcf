@@ -1,0 +1,10 @@
+[filament]
+name = ABS-1,75MM-RateFix
+diameter = 1.75
+multiplierPercent = 100
+printingTemperature = 245
+enableCooling = True
+bedTemperature = 0
+fanSpeedMin = 60
+fanSpeedMax = 60
+minimalLayerTime = 10
